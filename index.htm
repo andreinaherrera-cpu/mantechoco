@@ -965,8 +965,9 @@ pre.code::-webkit-scrollbar-thumb{background:#5B3A29;border-radius:4px}
   <div class="prompt-search-bar">
     <input type="search" id="prompt-search" placeholder="🔍  Buscar en prompts…" autocomplete="off">
     <button class="prompt-filter-chip active" data-cat="all">Todos</button>
-    <button class="prompt-filter-chip" data-cat="presupuesto">Presupuestos</button>
-    <button class="prompt-filter-chip" data-cat="dashboard">Dashboard</button>
+    <button class="prompt-filter-chip" data-cat="setup">🚀 Inicio</button>
+    <button class="prompt-filter-chip" data-cat="presupuesto">📊 Presupuestos</button>
+    <button class="prompt-filter-chip" data-cat="dashboard">💻 Dashboard</button>
     <button class="expand-all-btn" id="expand-all-btn">Expandir todos</button>
   </div>
 
@@ -1106,108 +1107,399 @@ var WILSON = [
 // Prompts
 var PROMPTS = [
   {
-    num:1, titulo:'Presupuesto de Ventas', cat:'presupuesto',
-    sub:'Pronóstico · CAGR · Descomposición estacional',
-    why:'Extrae el CAGR histórico, aplica la descomposición clásica multiplicativa para calcular los índices estacionales de cada mes y proyecta las ventas mensuales del Año 6 por sabor.',
+    num:1,
+    titulo:'Prompt Inicial — Diseño del Proyecto',
+    cat:'setup',
+    sub:'Concepto · Cadena presupuestaria · Chats por etapa',
+    why:'El punto de partida de todo el proyecto. Este prompt establece la visión completa de ManteChoco: qué se quiere construir, qué presupuestos se necesitan (Ventas → Producción → Requerimientos → Compras) y cómo se va a organizar el trabajo en chats separados. Es el mapa de ruta antes de ejecutar.',
     code:
-'Eres el analista de planeación de ManteChoco, C.A.\n'+
-'Datos: ventas históricas mensuales de 5 años (60 obs.) para los sabores\n'+
-'Mantecado (47%), Chocolate (33%) y Ron con Pasas (20%) — envases 2 L.\n\n'+
-'Tarea:\n'+
-'1. Calcula el CAGR año a año (Año1→Año5) sobre las ventas anuales totales.\n'+
-'2. Proyecta ventas Año 6 = Ventas_Año5 × (1 + CAGR).\n'+
-'3. Calcula índices estacionales (descomposición multiplicativa clásica):\n'+
-'   para cada mes, promedia su proporción sobre el total anual en los 5 años;\n'+
-'   normaliza para que la suma de los 12 índices = 12.\n'+
-'4. Reparte las ventas del Año 6 por mes usando los índices.\n'+
-'5. Desglosa cada mes por sabor respetando la mezcla del Año 5.\n'+
-'6. Devuelve tabla [Mes | Índice | Mantecado | Chocolate | Ron | Total]\n'+
-'   más los KPIs anuales.'
+'¡Hola, Claude! Tengo una consulta y necesito tu asesoría.\n'+
+'Quiero diseñar una Heladería llamada ManteChoco, ubicada en Caracas, Venezuela.\n'+
+'ManteChoco debe tener cierto Background, es decir, años en el Mercado y varios\n'+
+'Centros de Distribución en el país. La Heladería produce sus propias Mezclas de\n'+
+'Helado, y compra la Materia Prima y Envases a Terceros.\n\n'+
+'El Producto de ManteChoco son Envases de Helado de 2L en 3 presentaciones:\n'+
+'Mantecado, Chocolate y Ron Pasas.\n\n'+
+'El propósito de esta petición es crear el Presupuesto de Compras para la Heladería,\n'+
+'entendiendo que previamente se necesitan los Presupuestos de: Ventas, Producción y\n'+
+'Requerimientos; Debo acotar que los Presupuestos deben estar en USD.\n\n'+
+'Para el Presupuesto de Ventas, quiero que tenga estas Características:\n'+
+'- El Presupuesto parte de un Histórico de Ventas (5 años)\n'+
+'- Las Ventas deben estar Mensualizadas\n'+
+'- Debe haber Estacionalidad en las Ventas\n'+
+'- Las Ventas deben estar en Unidades de Producto, no en Unidades Monetarias\n\n'+
+'Para el Presupuesto de Producción, quiero que tenga estas Características:\n'+
+'- Debe partir del Presupuesto de Ventas\n'+
+'- La Producción debe estar Mensualizada\n'+
+'- La Empresa produce por Lotes\n'+
+'- La Empresa tiene una Capacidad de Producción determinada\n'+
+'- La Empresa solo produce en Días Hábiles en un Horario determinado\n'+
+'- La Empresa almacena la Materia Prima en un Galpón en el cual está arrendado\n'+
+'- La Producción debe estar en Unidades de Producto, no en Unidades Monetarias\n\n'+
+'Para el Presupuesto de Requerimientos, quiero que tenga estas Características:\n'+
+'- Debe partir del Presupuesto de Producción\n'+
+'- Los Requerimientos deben estar Mensualizados\n'+
+'- Debe tener una Cédula de Requerimientos (Receta) por cada Presentación del\n'+
+'  Producto, teniendo en cuenta la Materia Prima y Materiales requeridos para\n'+
+'  cada Presentación en el Mes\n\n'+
+'Para el Presupuesto de Compras, quiero que tenga estas Características:\n'+
+'- Debe partir del Presupuesto de Requerimientos\n'+
+'- Las Compras deben estar Mensualizadas\n'+
+'- Debe tener Inventario Inicial\n'+
+'- Debe tener un Inventario de Seguridad (Inventario Final) para cada Mes\n'+
+'- Debe tener la Cantidad Óptima de Pedido calculada por el Modelo de Wilson\n'+
+'  (Solamente si se puede utilizar, y de no poderse brindar una explicación detallada)\n'+
+'- Debe tener en cuenta que los Proveedores de cada Materia Prima despacha en\n'+
+'  Frecuencias y Cantidades distintas\n'+
+'- Debe tener una Cédula de Compra por cada Materia Prima, teniendo en cuenta el\n'+
+'  Requerimiento para cada Presentación en el Mes y la Cantidad Mínima de Pedido\n'+
+'  y Frecuencia de Despacho de los Proveedores\n'+
+'- El Presupuesto debe estar en Unidades de Producto y Unidades Monetarias\n\n'+
+'Después de crear los Presupuestos, quiero crear un Dashboard Interactivo en un HTML\n'+
+'visualizable para que cualquier persona pueda ver desde su celular el Paso a Paso\n'+
+'de todo este proceso.\n\n'+
+'Además, quiero que todos los Datos (Números, Recetas, Información, etcétera) sean\n'+
+'creados por ti mismo, manteniendo coherencia con la realidad.\n\n'+
+'Tengo planeado utilizar Chats distintos dedicados a cada Paso, es decir:\n'+
+'Un chat para la Creación de la Empresa y otros Supuestos, otro Chat para la creación\n'+
+'de los Presupuestos Base, un Chat dedicado enteramente al Presupuesto de Compras y\n'+
+'un último Chat enfocado al Dashboard Interactivo.\n\n'+
+'Para comenzar, haz una Propuesta para el Paso a Paso, y después de aprobarla\n'+
+'te diré qué hacer.'
   },
   {
-    num:2, titulo:'Presupuesto de Producción', cat:'presupuesto',
-    sub:'Inventario PT · Capacidad · Lotes',
-    why:'Transforma las ventas en plan de producción respetando la política de inventario del 12% del mes siguiente y el calendario laboral. Redondea a lotes enteros por sabor.',
+    num:2,
+    titulo:'Presupuesto de Ventas',
+    cat:'presupuesto',
+    sub:'Histórico 5 años · Estacionalidad · Descomposición clásica · Excel',
+    why:'Primer eslabón de la cadena. Este prompt construye el Presupuesto de Ventas a partir de un histórico de 60 meses generado con realismo venezolano. Usa descomposición clásica (índices estacionales normalizados) para proyectar los 12 meses del año presupuestado por presentación — todo en unidades, nunca en dinero.',
     code:
-'Eres el planificador de producción de ManteChoco.\n'+
-'Datos: Presupuesto de Ventas mensual por sabor (Año 6).\n\n'+
-'Supuestos:\n'+
-'  - Política inv. PT: 12% de las ventas del mes siguiente.\n'+
-'  - Inventario inicial Enero = inventario final Diciembre (circular).\n'+
-'  - Tamaño de lote: Mantecado 220 ud · Chocolate 165 ud · Ron 137 ud.\n'+
-'  - Turno: 8 h/día · lunes a viernes · días hábiles por mes provistos.\n'+
-'  - Velocidad: 330 ud/h por línea · 3 líneas (una por sabor).\n\n'+
-'Tarea:\n'+
-'1. Producción mes = Ventas + Inv.Fin − Inv.Ini; redondea al lote entero ≥.\n'+
-'2. Calcula el inventario final real (puede superar la política).\n'+
-'3. Capacidad disponible = días_hábiles × 8 × velocidad.\n'+
-'4. Determina la utilización (%).\n'+
-'5. Devuelve tabla resumen por mes y por sabor + KPIs anuales.'
+'<rol>\n'+
+'Eres un analista senior de planificación financiera y presupuestos, especializado en\n'+
+'empresas manufactureras de consumo masivo. Priorizas el rigor metodológico, la\n'+
+'coherencia de los datos y la trazabilidad de cada cálculo.\n'+
+'</rol>\n\n'+
+'<contexto>\n'+
+'Empresa (ficticia; debes generar tú los datos con realismo): ManteChoco, heladería\n'+
+'consolidada con varios años en el mercado y varios centros de distribución en\n'+
+'Venezuela; casa matriz en Caracas. Produce sus propias mezclas y vende envases de\n'+
+'helado de 2L en tres presentaciones: Mantecado, Chocolate y Ron con Pasas.\n\n'+
+'Decisiones ya tomadas para todo el proyecto:\n'+
+'- Horizonte: 12 meses (el año siguiente al último año histórico).\n'+
+'- Moneda: USD con inflación moderada anual (NO aplica aquí, este presupuesto va en UNIDADES).\n'+
+'- Nivel de detalle: intermedio.\n\n'+
+'Este es el PRIMER presupuesto de una cadena (Ventas → Producción → Requerimientos → Compras).\n'+
+'Solo debes construir el Presupuesto de Ventas.\n'+
+'</contexto>\n\n'+
+'<tarea>\n'+
+'Construye el Presupuesto de Ventas de ManteChoco y entrégalo como un archivo Excel\n'+
+'(.xlsx) profesional, auditable y con fórmulas vivas.\n'+
+'</tarea>\n\n'+
+'<datos_a_generar>\n'+
+'- Histórico de ventas de 5 años, mensualizado (60 meses), por cada una de las 3\n'+
+'  presentaciones, en UNIDADES (envases de 2L).\n'+
+'- Escala sugerida: último año histórico en el orden de 150.000 a 190.000 envases\n'+
+'  totales; crecimiento interanual moderado (~4%–8%).\n'+
+'- Mezcla de producto: Mantecado ~45–50%, Chocolate ~30–35%, Ron con Pasas ~18–22%.\n'+
+'- Estacionalidad marcada y realista para Caracas/Venezuela: picos en temporada\n'+
+'  cálida-seca y vacaciones (carnaval, semana santa, vacaciones jul–sep, diciembre);\n'+
+'  valles en meses lluviosos y regreso a clases.\n'+
+'Documenta todos los supuestos que uses.\n'+
+'</datos_a_generar>\n\n'+
+'<metodologia>\n'+
+'1. Carga el histórico de 5 años mensualizado por presentación.\n'+
+'2. Calcula índices estacionales mensuales (peso de cada mes respecto al promedio\n'+
+'   anual, normalizados para que sumen 12).\n'+
+'3. Estima la tendencia de los totales anuales (CAGR o regresión lineal) y proyecta\n'+
+'   el total del año presupuestado por presentación.\n'+
+'4. Distribuye el total anual proyectado entre los 12 meses aplicando los índices.\n'+
+'5. Redondea a unidades enteras y cuadra los totales.\n'+
+'</metodologia>\n\n'+
+'<formato_de_salida>\n'+
+'Excel (.xlsx) con estas hojas:\n'+
+'1. "Supuestos" — supuestos y parámetros del presupuesto de ventas.\n'+
+'2. "Histórico" — 5 años × 12 meses × 3 presentaciones, en unidades.\n'+
+'3. "Estacionalidad" — cálculo de los índices estacionales mensuales.\n'+
+'4. "Proyección" — tendencia anual y cálculo del año presupuestado.\n'+
+'5. "Presupuesto Ventas" — 12 meses × 3 presentaciones, totales y participación %.\n'+
+'Requisitos: fórmulas vivas enlazadas; gráfico de estacionalidad y otro de presupuesto mensual.\n'+
+'</formato_de_salida>\n\n'+
+'<restricciones>\n'+
+'- Todo el presupuesto va en UNIDADES (envases de 2L), NUNCA en unidades monetarias.\n'+
+'- Construye SOLO el Presupuesto de Ventas.\n'+
+'- Coherencia interna total: los totales deben reconciliar con la suma de presentaciones y meses.\n'+
+'- Al final, resume en 5–8 líneas: volúmenes anuales por presentación, índices estacionales\n'+
+'  usados y tasa de crecimiento aplicada.\n'+
+'</restricciones>'
   },
   {
-    num:3, titulo:'Presupuesto de Requerimientos', cat:'presupuesto',
-    sub:'Cédulas · Mermas · Consolidado de insumos',
-    why:'Convierte el plan de producción en cantidades físicas de insumos aplicando las recetas (cédulas) y los factores de merma. El resultado alimenta directamente las compras.',
+    num:3,
+    titulo:'Presupuesto de Producción',
+    cat:'presupuesto',
+    sub:'Lotes · Capacidad · Inventario PT · Calendario laboral',
+    why:'Segundo eslabón. Parte estrictamente de las ventas ya generadas y construye el plan de producción mensual por sabor: convierte demanda en lotes enteros, verifica factibilidad de capacidad con el calendario laboral venezolano y gestiona el inventario de producto terminado con la política del 10–15% del mes siguiente.',
     code:
-'Eres el analista de materiales de ManteChoco.\n'+
-'Datos: Plan de producción mensual por sabor (Año 6) + cédulas de insumos\n'+
-'por envase 2 L.\n\n'+
-'Supuestos:\n'+
-'  - Merma proceso (MP): 3% sobre toda la materia prima.\n'+
-'  - Merma empaque: 1% sobre materiales de empaque.\n\n'+
-'Tarea:\n'+
-'1. Para cada insumo, consumo bruto mensual:\n'+
-'   consumo = Σ(prod_sabor × cant_en_cédula × factor_merma).\n'+
-'2. Consolida todos los sabores por insumo.\n'+
-'3. Devuelve: tabla de cédulas · requerimientos mensuales · totales anuales.\n'+
-'4. Destaca los 3 insumos de mayor consumo en valor USD.'
+'## Contexto (llevar adelante)\n'+
+'- Proyecto: cadena presupuestaria de ManteChoco (Ventas → Producción → Requerimientos → Compras).\n'+
+'  Este es el SEGUNDO presupuesto.\n'+
+'- INSUMO OBLIGATORIO: el Presupuesto de Ventas ya generado en este mismo chat.\n'+
+'  Reutiliza esas cifras como punto de partida; no inventes ventas nuevas.\n'+
+'- Decisiones bloqueadas: horizonte 12 meses; USD con inflación moderada\n'+
+'  (NO aplica aquí, este presupuesto va en UNIDADES); detalle intermedio.\n\n'+
+'<rol>\n'+
+'Eres un analista senior de planificación de producción y presupuestos en manufactura\n'+
+'de consumo masivo. Priorizas rigor metodológico, factibilidad de capacidad y\n'+
+'trazabilidad de cada cálculo.\n'+
+'</rol>\n\n'+
+'<tarea>\n'+
+'Construye el Presupuesto de Producción de ManteChoco partiendo del Presupuesto de\n'+
+'Ventas de este chat, y entrégalo en Excel (.xlsx) profesional, auditable y con\n'+
+'fórmulas vivas.\n'+
+'</tarea>\n\n'+
+'<parametros_a_generar>\n'+
+'- Producción POR LOTES: cada presentación se produce en lotes separados. Define un\n'+
+'  tamaño de lote realista en envases de 2L (sugerido: 250–500 envases/lote).\n'+
+'- Capacidad determinada: deriva la capacidad mensual a partir de días hábiles del\n'+
+'  año presupuestado (calendario laboral venezolano, lun–vie menos feriados),\n'+
+'  horario de turno (p. ej. 8 h/día) y un ritmo realista (lotes por día).\n'+
+'  La capacidad ANUAL debe ser ≥ la demanda anual.\n'+
+'- Política de inventario PT: inventario final deseado por mes (p. ej. 10%–15% de\n'+
+'  las ventas del mes siguiente). Fija un inventario inicial de apertura coherente.\n'+
+'- Galpón arrendado: contexto de almacenamiento de MP; su costo NO entra aquí.\n'+
+'Documenta todos los supuestos.\n'+
+'</parametros_a_generar>\n\n'+
+'<metodologia>\n'+
+'1. Toma las ventas del mes (del Presupuesto de Ventas).\n'+
+'2. (+) Inventario final deseado de PT (según política).\n'+
+'3. (-) Inventario inicial de PT (= inventario final del mes anterior).\n'+
+'4. (=) Producción requerida en unidades.\n'+
+'5. Convierte a lotes enteros (redondeo hacia arriba); el excedente incrementa\n'+
+'   el inventario final real.\n'+
+'6. Verifica contra la capacidad mensual. Si un mes pico excede la capacidad,\n'+
+'   adelanta producción y déjalo documentado.\n'+
+'7. Expresa la producción en unidades Y en lotes.\n'+
+'</metodologia>\n\n'+
+'<formato_de_salida>\n'+
+'Excel (.xlsx) con estas hojas:\n'+
+'1. "Supuestos Producción" — tamaño de lote, lotes/día, turno, días hábiles,\n'+
+'   política de inventario PT, capacidad mensual, nota del galpón.\n'+
+'2. "Capacidad" — días hábiles × lotes/día × tamaño de lote.\n'+
+'3. "Inventario PT" — por mes y presentación: inv. inicial, producción, ventas, inv. final.\n'+
+'4. "Presupuesto Producción" — ventas + inv.fin - inv.ini = requerido → lotes → producción\n'+
+'   real; utilización de capacidad (%); totales.\n'+
+'Requisitos: gráfico de producción vs ventas vs capacidad; gráfico de evolución de inv. PT.\n'+
+'</formato_de_salida>\n\n'+
+'<restricciones>\n'+
+'- Todo va en UNIDADES y LOTES, NUNCA en unidades monetarias.\n'+
+'- Construye SOLO el Presupuesto de Producción.\n'+
+'- Capacidad anual ≥ demanda anual (factibilidad obligatoria).\n'+
+'- Coherencia interna: inv. final de un mes = inv. inicial del siguiente.\n'+
+'- Cierra con resumen: producción anual por presentación, total de lotes,\n'+
+'  utilización de capacidad promedio y meses con producción adelantada.\n'+
+'</restricciones>'
   },
   {
-    num:4, titulo:'Presupuesto de Compras', cat:'presupuesto',
-    sub:'EOQ · MOQ · Inflación USD · Stock de seguridad',
-    why:'Monetiza los requerimientos físicos con precios sujetos a inflación, respeta las restricciones de cada proveedor (frecuencia y MOQ) y garantiza que el inventario nunca quiebre.',
+    num:4,
+    titulo:'Presupuesto de Requerimientos',
+    cat:'presupuesto',
+    sub:'Cédulas BOM · Mermas · Requerimientos consolidados',
+    why:'Tercer eslabón. Traduce la producción en cantidades físicas de cada insumo usando cédulas de requerimientos (BOM) por presentación — 6 a 9 insumos cada una — con mermas de proceso (2–4%) y de empaque (~1%). El resultado consolidado mes a mes es el único input del Presupuesto de Compras.',
     code:
-'Eres el comprador estratégico de ManteChoco.\n\n'+
-'Datos:\n'+
-'  - Requerimientos mensuales por insumo (Año 6).\n'+
-'  - Tabla de proveedores: precio base USD · inflación 6% anual\n'+
-'    (= 0.4868% mensual compuesta) · frecuencia despacho\n'+
-'    (semanal / mensual / bimestral) · MOQ · días cobertura seguridad.\n'+
-'  - S = $45 / pedido · H = 25% anual del precio unitario.\n\n'+
-'Tarea por insumo:\n'+
-'1. EOQ = √(2·D·S/H); compara con MOQ; documenta la decisión.\n'+
-'2. Inv.seguridad = consumo_mes × cobertura_días / 30.\n'+
-'3. Compra necesaria = consumo + Inv.seg − Inv.inicial.\n'+
-'4. Ajusta al múltiplo de MOQ ≥ compra; si no despacha → 0.\n'+
-'5. Monto = compra_ajustada × precio_base × (1.004868)^(mes−1).\n'+
-'6. Inv.final = Inv.inicial + Compra − Consumo ≥ Inv.seguridad.\n'+
-'7. Devuelve: cédula mensual por insumo · total USD mensual · total USD anual.'
+'## Contexto (llevar adelante)\n'+
+'- Proyecto: cadena presupuestaria de ManteChoco. Este es el TERCER presupuesto.\n'+
+'- INSUMO OBLIGATORIO: el Presupuesto de Producción ya generado en este mismo chat.\n'+
+'  No recalcules ni alteres producción ni ventas.\n'+
+'- Decisiones bloqueadas: horizonte 12 meses; detalle intermedio (6–9 insumos por\n'+
+'  presentación); este presupuesto va en UNIDADES FÍSICAS, no en dinero.\n\n'+
+'<rol>\n'+
+'Eres un analista senior de planificación de materiales (MRP) y presupuestos en\n'+
+'manufactura de alimentos. Priorizas rigor en las recetas (BOM), consistencia de\n'+
+'unidades de medida y trazabilidad de cada cálculo.\n'+
+'</rol>\n\n'+
+'<tarea>\n'+
+'Construye el Presupuesto de Requerimientos de ManteChoco partiendo del Presupuesto\n'+
+'de Producción de este chat, y entrégalo en Excel (.xlsx) profesional, auditable y\n'+
+'con fórmulas vivas.\n'+
+'</tarea>\n\n'+
+'<parametros_a_generar>\n'+
+'Define una CÉDULA DE REQUERIMIENTOS (BOM) por presentación, con 6–9 insumos cada una:\n\n'+
+'Materia prima COMÚN a las 3 presentaciones:\n'+
+'  - Base láctea (L/unidad): ~0.9–1.1 L\n'+
+'  - Azúcar (kg/unidad): ~0.18–0.25 kg\n'+
+'  - Estabilizante-emulsionante (g/unidad): ~3–6 g\n\n'+
+'Materia prima DIFERENCIADORA:\n'+
+'  - Mantecado → vainilla (ml) + colorante (g)\n'+
+'  - Chocolate → cacao en polvo (kg) + cobertura/chocolate (kg); cacao ~0.06–0.10 kg\n'+
+'  - Ron con Pasas → pasas (kg) + esencia de ron (ml); pasas ~0.10–0.15 kg\n\n'+
+'Materiales de EMPAQUE:\n'+
+'  - Envase 2L (1 ud) — común\n'+
+'  - Tapa (1 ud) — común\n'+
+'  - Etiqueta (1 ud) — distinta por presentación\n\n'+
+'MERMAS: proceso ~2%–4% sobre materia prima; empaque ~1% sobre materiales.\n'+
+'Documenta todos los supuestos y unidades de medida.\n'+
+'</parametros_a_generar>\n\n'+
+'<metodologia>\n'+
+'1. Toma la producción del mes por presentación, en unidades.\n'+
+'2. Multiplica por la cédula (cantidad de cada insumo por unidad) → requerimiento bruto.\n'+
+'3. Aplica merma: requerimiento neto = bruto × (1 + merma).\n'+
+'4. Consolida por insumo sumando las tres presentaciones, mes a mes.\n'+
+'5. Mantén cada insumo en su unidad de medida (L, kg, g, ml, ud). No mezcles.\n'+
+'</metodologia>\n\n'+
+'<formato_de_salida>\n'+
+'Excel (.xlsx) con estas hojas:\n'+
+'1. "Supuestos Requerimientos" — catálogo de insumos, unidades, mermas y notas.\n'+
+'2. "Cédulas (Recetas)" — cédula por presentación: insumo × cantidad por unidad 2L.\n'+
+'3. "Req x Presentación" — por mes y presentación: producción × cédula = req. con merma.\n'+
+'4. "Requerimientos Consolidados" — por mes: total de cada insumo sumando las 3\n'+
+'   presentaciones; totales anuales por insumo.\n'+
+'Requisitos: fórmulas vivas enlazadas; gráfico de los 3–4 insumos de mayor consumo.\n'+
+'</formato_de_salida>\n\n'+
+'<restricciones>\n'+
+'- Todo va en UNIDADES FÍSICAS de insumo (L, kg, g, ml, unidades), NUNCA en dinero.\n'+
+'- Construye SOLO el Presupuesto de Requerimientos. No generes Compras.\n'+
+'- Consistencia de unidades obligatoria: cada insumo conserva una sola unidad.\n'+
+'- Cierra con resumen: consumo anual de cada insumo en su unidad, mermas aplicadas,\n'+
+'  lista de insumos comunes vs. diferenciadores.\n'+
+'</restricciones>'
   },
   {
-    num:5, titulo:'Dashboard HTML Interactivo', cat:'dashboard',
-    sub:'Pestañas · Gráficas Chart.js · Filtros · Modal · GitHub Pages',
-    why:'Con todos los presupuestos cerrados, genera la página HTML autocontenida que integra los cuatro eslabones en un dashboard navegable, con gráficas dinámicas, filtros por sabor, acordeón de prompts y modal de detalle — todo funcionando en GitHub Pages sin backend.',
+    num:5,
+    titulo:'Presupuesto de Compras',
+    cat:'presupuesto',
+    sub:'EOQ · MOQ · Inventario seguridad · Inflación USD · Proveedores',
+    why:'Cuarto y último presupuesto — el centro del proyecto. Monetiza el consumo físico de cada insumo con precios que suben por inflación mensual compuesta, respeta las restricciones reales de cada proveedor (frecuencia de despacho y MOQ), aplica el Modelo de Wilson insumo por insumo con decisión explícita, y garantiza cero quiebres de stock. Resultado doble: unidades físicas + USD.',
     code:
-'Eres un desarrollador frontend senior especializado en dashboards de supply chain.\n'+
-'Datos: los cuatro presupuestos completos de ManteChoco en JSON/tabla.\n\n'+
-'Genera un único archivo HTML autocontenido (sin backend; funciona en GitHub Pages)\n'+
-'con Chart.js desde cdnjs.cloudflare.com.\n\n'+
-'ESTRUCTURA OBLIGATORIA:\n'+
-'  - Header sticky · Nav con 6 pestañas · Todo dentro de DOMContentLoaded.\n'+
-'  - Secciones: La Empresa · Ventas · Producción · Requerimientos · Compras · Prompts.\n\n'+
-'INTERACTIVIDAD REQUERIDA:\n'+
-'  - Event Listeners en todos los botones (NO onclick inline donde sea posible).\n'+
-'  - Filtros de sabor con chips → re-dibujan las gráficas Chart.js en tiempo real.\n'+
-'  - Prompts: acordeón colapsable (toggle) + modal con overlay al hacer clic en "Ver completo".\n'+
-'  - Modal: tecla Escape lo cierra · clic en overlay lo cierra.\n'+
-'  - Buscador de texto + chips de categoría en la sección Prompts.\n'+
-'  - Botón "Expandir todos" / "Colapsar todos" en Prompts.\n'+
-'  - Botón Copiar con fallback para navigator.clipboard + execCommand.\n\n'+
-'DISEÑO: paleta crema/chocolate/mantecado/ron · DM Sans + DM Serif Display\n'+
-'        CSS variables · responsive mobile · animaciones suaves.'
+'## Contexto (llevar adelante)\n'+
+'- Proyecto: cadena presupuestaria de ManteChoco. Este es el CUARTO y ÚLTIMO presupuesto.\n'+
+'- INSUMO OBLIGATORIO: el Presupuesto de Requerimientos (consumo mensual de cada\n'+
+'  insumo en su unidad física). Reproduce la tabla de Requerimientos Consolidados\n'+
+'  (12 meses × cada insumo) y déjala enlazada. No alteres los requerimientos.\n'+
+'- Decisiones bloqueadas: horizonte 12 meses; USD con INFLACIÓN MODERADA ANUAL —\n'+
+'  aquí SÍ aplica: los precios de compra suben mes a mes.\n\n'+
+'<rol>\n'+
+'Eres un analista senior de compras y gestión de inventarios (supply chain) en\n'+
+'manufactura de alimentos, con dominio de modelos de lote económico (EOQ/Wilson)\n'+
+'y planificación de aprovisionamiento bajo restricciones de proveedor.\n'+
+'</rol>\n\n'+
+'<parametros_a_generar>\n'+
+'- PROVEEDORES: por insumo: precio unitario USD, frecuencia de despacho (semanal,\n'+
+'  quincenal, mensual o bimestral), cantidad mínima de pedido (MOQ) y lead time.\n'+
+'  Perecederos (base láctea) → frecuencia alta y poco stock.\n'+
+'  Secos/estables → frecuencia menor y compras grandes.\n'+
+'- INVENTARIO INICIAL de apertura por insumo (coherente con el inv. de seguridad).\n'+
+'- INVENTARIO DE SEGURIDAD por insumo y por mes: cobertura de X días según\n'+
+'  perecibilidad y lead time del proveedor.\n'+
+'- INFLACIÓN USD: define tasa anual moderada; deriva el precio mensual de cada\n'+
+'  insumo (precio creciente mes a mes).\n'+
+'</parametros_a_generar>\n\n'+
+'<modelo_de_wilson>\n'+
+'EOQ = √(2 × D × S / H)\n'+
+'  D = demanda anual  |  S = costo de emitir un pedido  |  H = costo de mantener\n\n'+
+'REGLA CRÍTICA: por cada insumo:\n'+
+'1. Calcula el EOQ teórico.\n'+
+'2. Compáralo con la realidad logística (frecuencia y MOQ del proveedor).\n'+
+'3. DECIDE: aplica / se ajusta al MOQ / NO es utilizable.\n'+
+'4. Si NO aplica o se ajusta, escribe EXPLICACIÓN DETALLADA del porqué y\n'+
+'   cuál criterio de pedido se usa en su lugar.\n'+
+'Incluye una hoja específica con este análisis para todos los insumos.\n'+
+'</modelo_de_wilson>\n\n'+
+'<metodologia>\n'+
+'Mensual y por insumo:\n'+
+'1. Requerimiento del mes (consumo, de Requerimientos Consolidados).\n'+
+'2. (+) Inventario final deseado (= inventario de seguridad del mes).\n'+
+'3. (-) Inventario inicial del mes (= inventario final del mes anterior).\n'+
+'4. (=) Compra necesaria del mes en unidades físicas.\n'+
+'5. Ajusta a la realidad del proveedor: redondea al múltiplo del MOQ y respeta\n'+
+'   la frecuencia (no compres en meses sin despacho; el stock cubre los intermedios).\n'+
+'6. Valora: unidades compradas × precio del mes (con inflación) = monto USD.\n'+
+'7. Reconcilia: inv. final real = inv. inicial + compras - consumo ≥ inv. seguridad.\n'+
+'</metodologia>\n\n'+
+'<formato_de_salida>\n'+
+'Excel (.xlsx) con estas hojas:\n'+
+'1. "Supuestos Compras" — tasa inflación USD, S y H del modelo, política inv. seguridad.\n'+
+'2. "Proveedores" — por insumo: proveedor, precio base, frecuencia, MOQ, lead time.\n'+
+'3. "Precios Mensuales" — precio de cada insumo mes a mes con inflación aplicada.\n'+
+'4. "Análisis Wilson (EOQ)" — D, S, H, EOQ teórico, comparación, decisión y explicación.\n'+
+'5. "Cédulas de Compra" — por insumo y mes: requerimiento, inv. inicial, inv. seguridad,\n'+
+'   compra necesaria, compra ajustada, precio, monto USD.\n'+
+'6. "Presupuesto Compras (Unidades)" — matriz mes × insumo en unidades físicas.\n'+
+'7. "Presupuesto Compras (USD)" — matriz mes × insumo en USD; totales y % por insumo.\n'+
+'Requisitos: gráfico de compras mensuales USD; gráfico de evolución de inventario\n'+
+'  de un insumo perecedero vs. uno estable.\n'+
+'</formato_de_salida>\n\n'+
+'<restricciones>\n'+
+'- El presupuesto se expresa en UNIDADES FÍSICAS y en USD (ambas, obligatorio).\n'+
+'- Respeta SIEMPRE las restricciones de proveedor: frecuencia y MOQ.\n'+
+'- El inventario final real de cada mes debe ser ≥ inventario de seguridad (sin quiebre).\n'+
+'- El análisis de Wilson es obligatorio para cada insumo, con decisión y explicación.\n'+
+'- Cierra con resumen: monto total USD, 3 insumos de mayor peso, en qué insumos el EOQ\n'+
+'  fue aplicable y en cuáles no (y por qué), y meses de mayor desembolso.\n'+
+'</restricciones>'
+  },
+  {
+    num:6,
+    titulo:'Dashboard HTML Interactivo',
+    cat:'dashboard',
+    sub:'GitHub Pages · Chart.js · Pestañas · Filtros · Modal · Mobile-first',
+    why:'Prompt final del proyecto. Con los 4 archivos Excel cerrados, este prompt genera el dashboard HTML autocontenido que muestra toda la cadena presupuestaria de forma visual e interactiva — sin servidor, sin backend, apto para GitHub Pages. Incluye extracción de datos desde Excel, filtros dinámicos por presentación, modal de detalle para cada sección, y diseño mobile-first con paleta coherente a ManteChoco.',
+    code:
+'## Contexto (llevar adelante)\n'+
+'- Proyecto: cadena presupuestaria de ManteChoco (heladería en Caracas; envases de\n'+
+'  helado de 2L en 3 presentaciones: Mantecado, Chocolate, Ron con Pasas).\n'+
+'- Este chat está dedicado SOLO al dashboard. Te entrego como insumo: los 4 archivos\n'+
+'  Excel ya generados (Ventas, Producción, Requerimientos y Compras) y un texto con\n'+
+'  la información/constitución de la empresa. Toda cifra del dashboard DEBE provenir\n'+
+'  de esos archivos; no inventes ni recalcules números.\n\n'+
+'<rol>\n'+
+'Eres un desarrollador front-end senior especializado en dashboards de datos y\n'+
+'visualización financiera, con buen criterio de diseño y foco mobile-first.\n'+
+'Priorizas exactitud de los datos, claridad visual y rendimiento en un solo archivo.\n'+
+'</rol>\n\n'+
+'<extraccion_de_datos>\n'+
+'- Lee los 4 archivos .xlsx y el texto de la empresa.\n'+
+'- Extrae: ventas mensuales por presentación; producción mensual, lotes y utilización;\n'+
+'  cédulas/recetas y requerimientos consolidados por insumo; proveedores, análisis de\n'+
+'  Wilson, compras mensuales en unidades y en USD.\n'+
+'- Incrusta los datos extraídos DENTRO del HTML como objetos JavaScript (JSON embebido).\n'+
+'  El HTML final NO debe depender de los Excel para funcionar.\n'+
+'- Si algún dato no está en los archivos, NO lo inventes: márcalo como "no disponible".\n'+
+'</extraccion_de_datos>\n\n'+
+'<estructura_del_dashboard>\n'+
+'Navegación por pestañas en este orden:\n'+
+'1. "La Empresa" — perfil, centros de distribución, producto y supuestos base.\n'+
+'2. "Paso 1 · Ventas" — KPIs, gráfico mensual por presentación, estacionalidad.\n'+
+'3. "Paso 2 · Producción" — KPIs, gráfico producción vs ventas vs capacidad, inv. PT.\n'+
+'4. "Paso 3 · Requerimientos" — cédulas, consumo anual por insumo, gráfico top insumos.\n'+
+'5. "Paso 4 · Compras" — KPIs USD, compras mensuales, análisis Wilson, proveedores.\n'+
+'Cada sección abre con frase breve que explique qué muestra y cómo conecta con la anterior.\n'+
+'</estructura_del_dashboard>\n\n'+
+'<requisitos_tecnicos>\n'+
+'- UN SOLO archivo .html con todo el CSS y JS embebido (sin archivos externos, sin build).\n'+
+'- Gráficos con Chart.js cargado por CDN + fallback a tablas si no hay internet.\n'+
+'- Mobile-first y totalmente responsivo: navegación cómoda con el pulgar, tarjetas\n'+
+'  apiladas en pantalla angosta, tablas con scroll horizontal.\n'+
+'- Event Listeners en todos los botones (NO onclick inline).\n'+
+'- Todo dentro de DOMContentLoaded.\n'+
+'- Filtros de sabor con chips → re-dibujan gráficas Chart.js en tiempo real.\n'+
+'- Prompts: acordeón colapsable (aria-expanded) + modal con overlay oscuro.\n'+
+'- Modal: tecla Escape lo cierra · clic fuera del box lo cierra.\n'+
+'- Buscador de texto en tiempo real + chips de categoría en sección Prompts.\n'+
+'- Botón "Expandir todos / Colapsar todos" (respeta filtros activos).\n'+
+'- Botón Copiar con fallback: navigator.clipboard → execCommand.\n'+
+'- Paleta: crema/chocolate/mantecado/ron-pasas. Tipografía DM Sans + DM Serif Display.\n'+
+'- Formato: separador de miles, símbolo USD donde corresponda, unidades visibles.\n'+
+'</requisitos_tecnicos>\n\n'+
+'<restricciones>\n'+
+'- Exactitud absoluta: todos los números provienen de los Excel; prohibido inventar cifras.\n'+
+'- Entrega UN solo archivo HTML autocontenido; no generes proyecto multiarchivo.\n'+
+'- No agregues secciones ni funcionalidades no pedidas.\n'+
+'- Si falta un dato, muéstralo como "no disponible"; no lo rellenes.\n'+
+'- Verifica que abra con doble clic y se vea bien en móvil.\n'+
+'- Cierra con nota breve: de qué hoja de qué Excel salió cada bloque de datos,\n'+
+'  y qué hacer si se actualiza un Excel.\n'+
+'</restricciones>'
   }
 ];
-
 /* ─────────────────────────────────────────
    2. UTILIDADES
 ───────────────────────────────────────── */
