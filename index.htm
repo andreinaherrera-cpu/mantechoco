@@ -602,19 +602,32 @@ pre.code::-webkit-scrollbar-thumb{background:#5B3A29;border-radius:4px}
 
 <script>
 /* ══════════════════════════════════════════════
-   NAVEGACIÓN POR PESTAÑAS
+   ARRANQUE SEGURO — espera DOM + Chart.js
 ══════════════════════════════════════════════ */
-document.querySelectorAll('.tab').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-    document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById(btn.dataset.s).classList.add('active');
-    // lazy render charts
-    if(btn.dataset.s==='ventas') renderVentas();
-    if(btn.dataset.s==='produccion') renderProduccion();
-    if(btn.dataset.s==='requerimientos') renderRequerimientos();
-    if(btn.dataset.s==='compras') renderCompras();
+document.addEventListener('DOMContentLoaded', function() {
+
+/* ── NAVEGACIÓN POR PESTAÑAS ── */
+var rendered = {};
+
+function showSection(sId) {
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+  document.querySelectorAll('main > section').forEach(function(s){ s.classList.remove('active'); });
+  var activeTab = document.querySelector('.tab[data-s="' + sId + '"]');
+  var activeSection = document.getElementById(sId);
+  if (activeTab) activeTab.classList.add('active');
+  if (activeSection) activeSection.classList.add('active');
+  if (!rendered[sId]) {
+    rendered[sId] = true;
+    if (sId === 'ventas')         { renderVentas(); }
+    if (sId === 'produccion')     { renderProduccion(); }
+    if (sId === 'requerimientos') { renderRequerimientos(); }
+    if (sId === 'compras')        { renderCompras(); }
+  }
+}
+
+document.querySelectorAll('.tab').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    showSection(btn.getAttribute('data-s'));
   });
 });
 
@@ -770,17 +783,14 @@ function destroyChart(id){if(charts[id]){charts[id].destroy();delete charts[id];
 ══════════════════════════════════════════════ */
 function setVentasFilter(f,btn){
   currentVFilter=f;
-  document.querySelectorAll('[onclick^="setVentasFilter"]').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('[onclick^="setVentasFilter"]').forEach(function(b){ b.classList.remove('active'); });
   btn.classList.add('active');
-  renderVentas();
+  buildVentasChart();
 }
 
-let ventasRendered=false;
 function renderVentas(){
-  if(ventasRendered)return; // only re-render on filter change
   buildVentasChart();
   buildVentasTable();
-  ventasRendered=false; // allow re-render on filter
 }
 
 function buildVentasChart(){
@@ -818,7 +828,7 @@ function buildVentasTable(){
 ══════════════════════════════════════════════ */
 function setInvFilter(f,btn){
   currentIFilter=f;
-  document.querySelectorAll('[onclick^="setInvFilter"]').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('[onclick^="setInvFilter"]').forEach(function(b){ b.classList.remove('active'); });
   btn.classList.add('active');
   buildInvChart();
 }
@@ -1118,15 +1128,25 @@ function togglePrompt(card){
   card.classList.toggle('open');
 }
 function copyCode(btn){
-  const code=btn.nextElementSibling.textContent;
-  navigator.clipboard.writeText(code).then(()=>{
-    btn.textContent='¡Copiado!';btn.classList.add('done');
-    setTimeout(()=>{btn.textContent='Copiar';btn.classList.remove('done');},2000);
-  });
+  var code = btn.nextElementSibling.textContent;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(code).then(function(){
+      btn.textContent='¡Copiado!'; btn.classList.add('done');
+      setTimeout(function(){ btn.textContent='Copiar'; btn.classList.remove('done'); }, 2000);
+    });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = code; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    btn.textContent='¡Copiado!'; btn.classList.add('done');
+    setTimeout(function(){ btn.textContent='Copiar'; btn.classList.remove('done'); }, 2000);
+  }
 }
 
-// Render ventas on load (first visible section)
-renderVentas();
+/* ── INICIO ── */
+showSection('empresa');
+
+}); // fin DOMContentLoaded
 </script>
 </body>
 </html>
