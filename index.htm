@@ -4,194 +4,279 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ManteChoco · Cadena Presupuestaria Año 6</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 :root{
   --crema:#FAF3E0; --mantecado:#E8C07D; --mantecado-d:#C99A4E;
   --chocolate:#5B3A29; --chocolate-l:#8B5E3C; --ron:#7A4B6B; --ron-l:#A06C8F;
   --tinta:#3A2A1E; --suave:#7A6A5A; --linea:#E4D8C4; --blanco:#FFFDF8;
-  --ok:#3E7C59; --sombra:0 2px 10px rgba(91,58,41,.08);
+  --ok:#3E7C59; --sombra:0 2px 12px rgba(91,58,41,.10);
+  --radius:14px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  background:var(--crema);color:var(--tinta);line-height:1.5;-webkit-font-smoothing:antialiased}
-header{background:linear-gradient(135deg,var(--chocolate),var(--chocolate-l));color:var(--crema);
-  padding:18px 16px 14px;position:sticky;top:0;z-index:50;box-shadow:var(--sombra)}
-.brand{display:flex;align-items:center;gap:10px}
-.scoops{font-size:26px;line-height:1}
-.brand h1{font-size:19px;font-weight:700;letter-spacing:.2px}
-.brand p{font-size:11.5px;opacity:.85;margin-top:1px}
-nav{display:flex;gap:6px;overflow-x:auto;padding:12px 16px 4px;background:var(--blanco);
-  position:sticky;top:62px;z-index:49;box-shadow:0 2px 6px rgba(91,58,41,.05);
+body{font-family:'DM Sans',sans-serif;background:var(--crema);color:var(--tinta);
+  line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh}
+
+/* ─── HEADER ─── */
+header{background:linear-gradient(135deg,var(--chocolate) 0%,var(--chocolate-l) 100%);
+  color:var(--crema);padding:16px 20px 14px;position:sticky;top:0;z-index:60;
+  box-shadow:0 4px 20px rgba(91,58,41,.20)}
+.header-inner{display:flex;align-items:center;gap:12px;max-width:1140px;margin:0 auto}
+.scoops{font-size:28px;line-height:1;filter:drop-shadow(0 2px 4px rgba(0,0,0,.2))}
+.brand h1{font-family:'DM Serif Display',serif;font-size:20px;font-weight:400;letter-spacing:.3px}
+.brand p{font-size:11.5px;opacity:.80;margin-top:2px;font-weight:500}
+.header-badge{margin-left:auto;background:rgba(255,253,248,.15);border:1px solid rgba(255,253,248,.25);
+  border-radius:20px;padding:5px 13px;font-size:11px;font-weight:700;letter-spacing:.5px;
+  text-transform:uppercase;color:var(--crema)}
+
+/* ─── NAV ─── */
+nav{background:var(--blanco);border-bottom:1px solid var(--linea);
+  position:sticky;top:62px;z-index:50;box-shadow:0 2px 8px rgba(91,58,41,.06)}
+.nav-inner{display:flex;gap:4px;overflow-x:auto;padding:10px 20px 8px;max-width:1140px;margin:0 auto;
   -webkit-overflow-scrolling:touch;scrollbar-width:none}
-nav::-webkit-scrollbar{display:none}
-.tab{flex:0 0 auto;border:1.5px solid var(--linea);background:var(--blanco);color:var(--suave);
-  padding:8px 13px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;
-  transition:.18s;font-family:inherit}
-.tab:hover{border-color:var(--mantecado-d)}
-.tab.active{background:var(--chocolate);color:var(--crema);border-color:var(--chocolate)}
-main{padding:16px 16px 60px;max-width:1100px;margin:0 auto}
-section{display:none;animation:fade .35s ease}
+.nav-inner::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;border:1.5px solid var(--linea);background:transparent;color:var(--suave);
+  padding:8px 16px;border-radius:22px;font-size:13px;font-weight:600;cursor:pointer;
+  white-space:nowrap;transition:all .2s;font-family:'DM Sans',sans-serif;
+  display:flex;align-items:center;gap:7px}
+.tab:hover{border-color:var(--mantecado-d);color:var(--tinta);background:var(--crema)}
+.tab.active{background:var(--chocolate);color:var(--crema);border-color:var(--chocolate);
+  box-shadow:0 2px 8px rgba(91,58,41,.25)}
+.tab .t-icon{font-size:14px}
+
+/* ─── MAIN ─── */
+main{padding:20px 20px 80px;max-width:1140px;margin:0 auto}
+section{display:none;animation:fadeUp .3s ease}
 section.active{display:block}
-@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.intro{font-size:14px;color:var(--suave);background:var(--blanco);border-left:4px solid var(--mantecado);
-  padding:12px 14px;border-radius:0 10px 10px 0;margin-bottom:16px;box-shadow:var(--sombra)}
-h2{font-size:21px;margin-bottom:3px;color:var(--chocolate)}
-.step-label{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;
-  color:var(--mantecado-d);margin-bottom:8px}
-h3{font-size:15px;margin:22px 0 10px;color:var(--chocolate);display:flex;align-items:center;gap:7px}
-h3::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--mantecado)}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:11px;margin-bottom:6px}
-.card{background:var(--blanco);border-radius:14px;padding:14px;box-shadow:var(--sombra);border:1px solid var(--linea)}
-.card .k{font-size:11.5px;color:var(--suave);font-weight:600;margin-bottom:5px}
-.card .v{font-size:22px;font-weight:700;color:var(--chocolate);line-height:1.15}
-.card .u{font-size:11px;color:var(--suave);font-weight:500;margin-top:2px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ─── SECTION HEADER ─── */
+.step-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--mantecado-d);margin-bottom:6px}
+h2{font-family:'DM Serif Display',serif;font-size:26px;font-weight:400;color:var(--chocolate);
+  margin-bottom:4px;line-height:1.2}
+.intro{font-size:13.5px;color:var(--suave);background:var(--blanco);
+  border-left:3px solid var(--mantecado);padding:12px 15px;border-radius:0 10px 10px 0;
+  margin:14px 0 20px;box-shadow:var(--sombra);line-height:1.6}
+
+h3{font-size:15px;font-weight:700;margin:24px 0 12px;color:var(--chocolate);
+  display:flex;align-items:center;gap:8px}
+h3 .dot{width:8px;height:8px;border-radius:50%;background:var(--mantecado);flex-shrink:0}
+
+/* ─── CARDS ─── */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:8px}
+.card{background:var(--blanco);border-radius:var(--radius);padding:16px;
+  box-shadow:var(--sombra);border:1px solid var(--linea);transition:.2s}
+.card:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(91,58,41,.13)}
+.card .k{font-size:11px;color:var(--suave);font-weight:700;text-transform:uppercase;
+  letter-spacing:.8px;margin-bottom:6px}
+.card .v{font-size:24px;font-weight:700;color:var(--chocolate);line-height:1.15;
+  font-family:'DM Serif Display',serif}
+.card .u{font-size:11px;color:var(--suave);font-weight:500;margin-top:3px}
 .card.m{border-top:3px solid var(--mantecado)}
 .card.c{border-top:3px solid var(--chocolate-l)}
 .card.r{border-top:3px solid var(--ron)}
-.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:11px}
-.info-card{background:var(--blanco);border-radius:14px;padding:15px;box-shadow:var(--sombra);border:1px solid var(--linea)}
-.info-card h4{font-size:13.5px;color:var(--chocolate);margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.card.g{border-top:3px solid var(--ok)}
+
+/* ─── INFO GRID ─── */
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:8px}
+.info-card{background:var(--blanco);border-radius:var(--radius);padding:16px;
+  box-shadow:var(--sombra);border:1px solid var(--linea)}
+.info-card h4{font-size:13px;color:var(--chocolate);margin-bottom:10px;
+  display:flex;align-items:center;gap:7px;font-weight:700}
 .info-card ul{list-style:none}
-.info-card li{font-size:13px;padding:4px 0;border-bottom:1px dashed var(--linea);color:var(--suave);
-  display:flex;justify-content:space-between;gap:10px}
+.info-card li{font-size:12.5px;padding:5px 0;border-bottom:1px dashed var(--linea);
+  color:var(--suave);display:flex;justify-content:space-between;gap:10px}
 .info-card li:last-child{border:0}
 .info-card li b{color:var(--tinta);font-weight:600;text-align:right}
-.chart-box{background:var(--blanco);border-radius:14px;padding:14px 12px 10px;box-shadow:var(--sombra);
-  border:1px solid var(--linea);margin-bottom:6px}
+
+/* ─── CHART ─── */
+.chart-box{background:var(--blanco);border-radius:var(--radius);padding:16px 14px 12px;
+  box-shadow:var(--sombra);border:1px solid var(--linea);margin-bottom:8px}
+.chart-title{font-size:12px;font-weight:700;color:var(--suave);text-transform:uppercase;
+  letter-spacing:.8px;margin-bottom:12px}
 .chart-wrap{position:relative;height:300px;width:100%}
-.filter{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:13px}
-.filter label{font-size:12.5px;font-weight:600;color:var(--suave)}
-.chip{border:1.5px solid var(--linea);background:var(--blanco);padding:6px 12px;border-radius:18px;
-  font-size:12.5px;font-weight:600;cursor:pointer;transition:.15s;color:var(--suave);font-family:inherit}
+
+/* ─── FILTER CHIPS ─── */
+.filter{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.filter label{font-size:12px;font-weight:700;color:var(--suave);text-transform:uppercase;letter-spacing:.5px}
+.chip{border:1.5px solid var(--linea);background:var(--blanco);padding:6px 14px;border-radius:20px;
+  font-size:12px;font-weight:600;cursor:pointer;transition:.15s;color:var(--suave);font-family:'DM Sans',sans-serif}
+.chip:hover{border-color:var(--mantecado-d)}
 .chip.active{color:var(--crema);border-color:transparent}
 .chip[data-p="all"].active{background:var(--chocolate)}
 .chip[data-p="Mantecado"].active{background:var(--mantecado-d)}
 .chip[data-p="Chocolate"].active{background:var(--chocolate-l)}
 .chip[data-p="Ron con Pasas"].active{background:var(--ron)}
-.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px;box-shadow:var(--sombra);
-  border:1px solid var(--linea);margin-bottom:6px}
+
+/* ─── TABLE ─── */
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px;
+  box-shadow:var(--sombra);border:1px solid var(--linea);margin-bottom:8px}
 table{border-collapse:collapse;width:100%;background:var(--blanco);font-size:12.5px;min-width:max-content}
-th,td{padding:8px 11px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--linea)}
-th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--blanco);font-weight:600;z-index:1}
-thead th{background:var(--chocolate);color:var(--crema);font-weight:600;font-size:11.5px;position:sticky;top:0}
+th,td{padding:9px 12px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--linea)}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--blanco);
+  font-weight:600;z-index:1}
+thead th{background:var(--chocolate);color:var(--crema);font-weight:700;font-size:11.5px;
+  position:sticky;top:0;letter-spacing:.3px}
 thead th:first-child{background:var(--chocolate);z-index:2}
 tbody tr:nth-child(even) td{background:#FBF6EC}
 tbody tr:nth-child(even) td:first-child{background:#FBF6EC}
-tr.total td{font-weight:700;color:var(--chocolate);border-top:2px solid var(--mantecado);background:var(--crema)!important}
-.badge{display:inline-block;padding:2px 9px;border-radius:12px;font-size:11px;font-weight:600}
+tr.total td{font-weight:700;color:var(--chocolate);border-top:2px solid var(--mantecado);
+  background:var(--crema)!important}
+
+/* ─── FLOW BAR ─── */
+.flow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;background:var(--blanco);
+  border:1px solid var(--linea);border-radius:12px;padding:12px 16px;margin-bottom:18px;
+  box-shadow:var(--sombra)}
+.flow .node{font-size:11.5px;font-weight:700;padding:6px 12px;border-radius:18px;
+  background:var(--crema);color:var(--suave);white-space:nowrap;transition:.2s}
+.flow .node.on{background:var(--chocolate);color:var(--crema);
+  box-shadow:0 2px 8px rgba(91,58,41,.2)}
+.flow .arr{color:var(--mantecado-d);font-weight:700;font-size:14px}
+
+/* ─── PREMISAS ─── */
+.premisas{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-bottom:10px}
+.prem{background:var(--blanco);border-radius:var(--radius);padding:16px;
+  box-shadow:var(--sombra);border:1px solid var(--linea);border-top:3px solid var(--ron)}
+.prem h4{font-size:13.5px;color:var(--chocolate);margin-bottom:8px;
+  display:flex;align-items:center;gap:7px;font-weight:700}
+.prem p{font-size:12.5px;color:var(--suave);line-height:1.6}
+.prem .tag{display:inline-block;font-size:10px;font-weight:700;color:var(--ron);
+  background:#F3E9F0;border-radius:10px;padding:2px 9px;margin-bottom:7px;letter-spacing:.3px}
+
+/* ─── STEPS ─── */
+.steps{counter-reset:step;list-style:none;margin:6px 0 0}
+.steps li{position:relative;padding:12px 14px 12px 50px;background:var(--blanco);
+  border:1px solid var(--linea);border-radius:12px;margin-bottom:9px;
+  font-size:13px;color:var(--tinta);box-shadow:var(--sombra)}
+.steps li::before{counter-increment:step;content:counter(step);position:absolute;
+  left:12px;top:50%;transform:translateY(-50%);width:26px;height:26px;border-radius:50%;
+  background:var(--chocolate);color:var(--crema);font-size:12.5px;font-weight:700;
+  display:flex;align-items:center;justify-content:center}
+.steps li b{color:var(--chocolate)}
+.steps .formula{display:block;margin-top:6px;font-family:'JetBrains Mono',monospace;
+  font-size:11.5px;color:var(--ron);background:var(--crema);border-radius:7px;padding:6px 9px}
+
+/* ─── EQ & WORKED ─── */
+.eq{background:var(--blanco);border:1px dashed var(--mantecado-d);border-radius:12px;
+  padding:14px 16px;margin:14px 0;font-family:'JetBrains Mono',monospace;font-size:13px;
+  color:var(--chocolate);text-align:center;font-weight:600;overflow-x:auto;
+  white-space:nowrap;box-shadow:var(--sombra)}
+.worked{background:var(--blanco);border:1px solid var(--linea);border-left:4px solid var(--mantecado);
+  border-radius:0 12px 12px 0;padding:14px 16px;margin:16px 0 8px;box-shadow:var(--sombra)}
+.worked h4{font-size:13.5px;color:var(--chocolate);margin-bottom:8px;font-weight:700}
+.worked .line{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;
+  padding:4px 0;border-bottom:1px dashed var(--linea);color:var(--suave)}
+.worked .line:last-child{border:0}
+.worked .line b{color:var(--tinta);font-weight:600}
+.worked .line.res{color:var(--ron);font-weight:700;border-top:2px solid var(--mantecado);
+  margin-top:5px;padding-top:8px}
+.worked .line.res b{color:var(--ron)}
+
+/* ─── BADGE ─── */
+.badge{display:inline-block;padding:2px 9px;border-radius:12px;font-size:11px;font-weight:700}
 .badge.apl{background:#E2F0E8;color:var(--ok)}
 .badge.aju{background:#FBF0DA;color:var(--mantecado-d)}
 .badge.no{background:#F3E2E2;color:#A4503F}
+
+/* ─── PILL ─── */
+.pill-row{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.pill{font-size:12px;background:var(--crema);border:1px solid var(--linea);border-radius:20px;
+  padding:5px 12px;color:var(--suave);font-weight:600}
+
+/* ─── NOTE ─── */
 .note{font-size:12px;color:var(--suave);background:var(--blanco);border:1px dashed var(--linea);
-  border-radius:10px;padding:12px 14px;margin-top:20px;line-height:1.6}
+  border-radius:10px;padding:14px 16px;margin-top:22px;line-height:1.65}
 .note b{color:var(--chocolate)}
-.fallnote{font-size:11.5px;color:var(--mantecado-d);text-align:center;padding:6px;display:none}
-.pill-row{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}
-.pill{font-size:11.5px;background:var(--crema);border:1px solid var(--linea);border-radius:20px;
-  padding:5px 11px;color:var(--suave);font-weight:600}
-/* ----- flujo de la cadena (banner de proceso) ----- */
-.flow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;background:var(--blanco);
-  border:1px solid var(--linea);border-radius:12px;padding:11px 13px;margin-bottom:16px;box-shadow:var(--sombra)}
-.flow .node{font-size:11.5px;font-weight:700;padding:5px 10px;border-radius:16px;background:var(--crema);
-  color:var(--suave);white-space:nowrap}
-.flow .node.on{background:var(--chocolate);color:var(--crema)}
-.flow .arr{color:var(--mantecado-d);font-weight:700;font-size:13px}
-/* ----- premisas (paso a paso de compras) ----- */
-.premisas{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:11px;margin-bottom:6px}
-.prem{background:var(--blanco);border-radius:14px;padding:14px;box-shadow:var(--sombra);
-  border:1px solid var(--linea);border-top:3px solid var(--ron)}
-.prem h4{font-size:13.5px;color:var(--chocolate);margin-bottom:7px;display:flex;align-items:center;gap:7px}
-.prem p{font-size:12.5px;color:var(--suave);line-height:1.55}
-.prem .tag{display:inline-block;font-size:10.5px;font-weight:700;color:var(--ron);
-  background:#F3E9F0;border-radius:10px;padding:2px 8px;margin-bottom:7px}
-.steps{counter-reset:step;list-style:none;margin:4px 0 0}
-.steps li{position:relative;padding:11px 12px 11px 46px;background:var(--blanco);border:1px solid var(--linea);
-  border-radius:12px;margin-bottom:9px;font-size:13px;color:var(--tinta);box-shadow:var(--sombra)}
-.steps li::before{counter-increment:step;content:counter(step);position:absolute;left:11px;top:50%;
-  transform:translateY(-50%);width:25px;height:25px;border-radius:50%;background:var(--chocolate);
-  color:var(--crema);font-size:12.5px;font-weight:700;display:flex;align-items:center;justify-content:center}
-.steps li b{color:var(--chocolate)}
-.steps .formula{display:block;margin-top:5px;font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
-  font-size:11.5px;color:var(--ron);background:var(--crema);border-radius:7px;padding:5px 8px}
-.eq{background:var(--blanco);border:1px dashed var(--mantecado-d);border-radius:12px;padding:13px 15px;
-  margin:12px 0;font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:13px;
-  color:var(--chocolate);text-align:center;font-weight:600;overflow-x:auto;white-space:nowrap;box-shadow:var(--sombra)}
-.worked{background:var(--blanco);border:1px solid var(--linea);border-left:4px solid var(--mantecado);
-  border-radius:0 12px 12px 0;padding:13px 15px;margin:14px 0 6px;box-shadow:var(--sombra)}
-.worked h4{font-size:13.5px;color:var(--chocolate);margin-bottom:6px}
-.worked .line{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;padding:3px 0;
-  border-bottom:1px dashed var(--linea);color:var(--suave)}
-.worked .line:last-child{border:0}
-.worked .line b{color:var(--tinta);font-weight:600}
-.worked .line.res{color:var(--ron);font-weight:700;border-top:2px solid var(--mantecado);margin-top:4px;padding-top:7px}
-.worked .line.res b{color:var(--ron)}
-/* ----- prompts ----- */
-.prompt-grid{display:grid;gap:13px}
-.prompt-card{background:var(--blanco);border-radius:14px;border:1px solid var(--linea);
+
+/* ─── PROMPTS ─── */
+.prompt-grid{display:grid;gap:14px}
+.prompt-card{background:var(--blanco);border-radius:var(--radius);border:1px solid var(--linea);
   box-shadow:var(--sombra);overflow:hidden}
-.prompt-head{display:flex;align-items:center;gap:11px;padding:13px 15px;cursor:pointer;
-  background:linear-gradient(135deg,var(--chocolate),var(--chocolate-l));color:var(--crema)}
-.prompt-head .num{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:rgba(255,253,248,.18);
-  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+.prompt-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;
+  background:linear-gradient(135deg,var(--chocolate),var(--chocolate-l));color:var(--crema);
+  user-select:none;-webkit-tap-highlight-color:transparent}
+.prompt-head:hover{filter:brightness(1.08)}
+.prompt-head .num{flex:0 0 auto;width:32px;height:32px;border-radius:50%;
+  background:rgba(255,253,248,.18);display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:14px}
 .prompt-head .ttl{flex:1;min-width:0}
 .prompt-head .ttl b{display:block;font-size:14.5px;font-weight:700}
 .prompt-head .ttl span{font-size:11.5px;opacity:.85}
-.prompt-head .chev{transition:.25s;font-size:13px}
+.prompt-head .chev{transition:.25s;font-size:14px;flex-shrink:0}
 .prompt-card.open .chev{transform:rotate(180deg)}
-.prompt-body{max-height:0;overflow:hidden;transition:max-height .35s ease}
-.prompt-card.open .prompt-body{max-height:6000px}
-.prompt-inner{padding:13px 15px}
-.prompt-why{font-size:12.5px;color:var(--suave);margin-bottom:11px;line-height:1.5}
+.prompt-body{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1)}
+.prompt-card.open .prompt-body{max-height:8000px}
+.prompt-inner{padding:14px 16px}
+.prompt-why{font-size:12.5px;color:var(--suave);margin-bottom:12px;line-height:1.6}
 .prompt-why b{color:var(--chocolate)}
 .codewrap{position:relative}
-.copy-btn{position:absolute;top:9px;right:9px;z-index:2;border:1px solid var(--linea);background:var(--blanco);
-  color:var(--chocolate);font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:8px;cursor:pointer;
-  font-family:inherit;transition:.15s}
+.copy-btn{position:absolute;top:9px;right:9px;z-index:2;border:1px solid var(--linea);
+  background:var(--blanco);color:var(--chocolate);font-size:11.5px;font-weight:700;
+  padding:5px 12px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s}
 .copy-btn:hover{background:var(--crema)}
 .copy-btn.done{background:var(--ok);color:#fff;border-color:var(--ok)}
-pre.code{background:#2E211A;color:#EDE0CC;border-radius:10px;padding:14px 13px;padding-top:34px;overflow-x:auto;
-  font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;line-height:1.55;
-  white-space:pre-wrap;word-break:break-word;max-height:420px;overflow-y:auto}
+pre.code{background:#2E211A;color:#EDE0CC;border-radius:10px;padding:14px;padding-top:38px;
+  overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:11.5px;line-height:1.6;
+  white-space:pre-wrap;word-break:break-word;max-height:440px;overflow-y:auto}
 pre.code::-webkit-scrollbar{width:8px;height:8px}
 pre.code::-webkit-scrollbar-thumb{background:#5B3A29;border-radius:4px}
+
+/* ─── ESTACIONALIDAD ─── */
+.estac-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:8px;margin-bottom:14px}
+.estac-item{background:var(--blanco);border-radius:10px;border:1px solid var(--linea);
+  padding:8px 6px;text-align:center;box-shadow:var(--sombra)}
+.estac-item .mes{font-size:11px;font-weight:700;color:var(--suave);text-transform:uppercase;margin-bottom:3px}
+.estac-item .idx{font-size:16px;font-weight:700;font-family:'DM Serif Display',serif}
+.estac-item.alto .idx{color:var(--ok)}
+.estac-item.medio .idx{color:var(--mantecado-d)}
+.estac-item.bajo .idx{color:#A4503F}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:600px){
+  .cards{grid-template-columns:repeat(2,1fr)}
+  .card .v{font-size:20px}
+  .chart-wrap{height:240px}
+  h2{font-size:22px}
+  header .header-badge{display:none}
+}
 @media print{
   nav{position:static}header{position:static}
   section{display:block!important;page-break-before:always;animation:none}
   section:first-of-type{page-break-before:avoid}
   .prompt-body{max-height:none!important}.copy-btn{display:none}
-  .chart-wrap{height:320px}
-}
-@media(max-width:560px){
-  .cards{grid-template-columns:repeat(2,1fr)}
-  .card .v{font-size:19px}
-  .chart-wrap{height:260px}
-  h2{font-size:19px}
 }
 </style>
 </head>
 <body>
+
 <header>
-  <div class="brand">
+  <div class="header-inner">
     <span class="scoops">🍦</span>
-    <div>
+    <div class="brand">
       <h1>ManteChoco, C.A.</h1>
       <p>Cadena Presupuestaria · Año 6 · Helado 2 L · USD</p>
     </div>
+    <span class="header-badge">Año 6</span>
   </div>
 </header>
 
-<nav id="nav">
-  <button class="tab active" data-s="empresa">La Empresa</button>
-  <button class="tab" data-s="ventas">Paso 1 · Ventas</button>
-  <button class="tab" data-s="produccion">Paso 2 · Producción</button>
-  <button class="tab" data-s="requerimientos">Paso 3 · Requerimientos</button>
-  <button class="tab" data-s="compras">Paso 4 · Compras</button>
-  <button class="tab" data-s="prompts">Prompts</button>
+<nav>
+  <div class="nav-inner" id="nav">
+    <button class="tab active" data-s="empresa"><span class="t-icon">🏢</span>La Empresa</button>
+    <button class="tab" data-s="ventas"><span class="t-icon">📈</span>Paso 1 · Ventas</button>
+    <button class="tab" data-s="produccion"><span class="t-icon">🏭</span>Paso 2 · Producción</button>
+    <button class="tab" data-s="requerimientos"><span class="t-icon">🧪</span>Paso 3 · Requerimientos</button>
+    <button class="tab" data-s="compras"><span class="t-icon">🛒</span>Paso 4 · Compras</button>
+    <button class="tab" data-s="prompts"><span class="t-icon">💬</span>Prompts</button>
+  </div>
 </nav>
 
 <main>
-<!-- ============ EMPRESA ============ -->
+
+<!-- ══════════════ EMPRESA ══════════════ -->
 <section id="empresa" class="active">
   <div class="step-label">Punto de partida</div>
   <h2>La Empresa</h2>
@@ -204,7 +289,6 @@ pre.code::-webkit-scrollbar-thumb{background:#5B3A29;border-radius:4px}
     <div class="card"><div class="k">Crecimiento aplicado</div><div class="v">6.0%</div><div class="u">CAGR Año 1→5</div></div>
   </div>
 
-  <h3>Perfil y centros de distribución</h3>
   <div class="info-grid">
     <div class="info-card">
       <h4>🏢 Perfil</h4>
@@ -223,280 +307,826 @@ pre.code::-webkit-scrollbar-thumb{background:#5B3A29;border-radius:4px}
         <li>Días <b>Lunes a viernes</b></li>
         <li>Días hábiles/año <b>249</b></li>
         <li>Producción <b>Por lotes</b></li>
-        <li>Galpón arrendado <b>Almacén MP*</b></li>
+        <li>Galpón <b>Arrendado (Almacén MP)</b></li>
       </ul>
     </div>
     <div class="info-card">
       <h4>🍨 Presentaciones y mezcla</h4>
       <ul>
-        <li>Mantecado <b>~47%</b></li>
-        <li>Chocolate <b>~33%</b></li>
-        <li>Ron con Pasas <b>~20%</b></li>
+        <li>Mantecado <b>≈ 47%</b></li>
+        <li>Chocolate <b>≈ 33%</b></li>
+        <li>Ron con Pasas <b>≈ 20%</b></li>
         <li>Política inv. PT <b>12%</b></li>
         <li>Inflación compras <b>6% anual</b></li>
       </ul>
     </div>
   </div>
 
-  <h3>Estacionalidad del mercado</h3>
+  <h3><span class="dot"></span>Estacionalidad del mercado</h3>
   <div class="info-grid">
     <div class="info-card">
-      <h4>📈 Picos</h4>
+      <h4>📈 Picos de demanda</h4>
       <ul>
-        <li>Carnaval <b>Feb–Mar</b></li>
+        <li>Carnaval <b>Feb – Mar</b></li>
         <li>Semana Santa <b>Abril</b></li>
-        <li>Vacaciones escolares <b>Jul–Sep</b></li>
+        <li>Vacaciones escolares <b>Jul – Sep</b></li>
         <li>Fiestas <b>Diciembre</b></li>
       </ul>
     </div>
     <div class="info-card">
-      <h4>📉 Valles</h4>
+      <h4>📉 Valles de demanda</h4>
       <ul>
-        <li>Temporada de lluvias <b>May–Jun</b></li>
-        <li>Regreso a clases <b>Oct–Nov</b></li>
+        <li>Temporada de lluvias <b>May – Jun</b></li>
+        <li>Regreso a clases <b>Oct – Nov</b></li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>⚙️ Supuestos clave</h4>
+      <ul>
+        <li>Política de inv. PT <b>12% del mes sig.</b></li>
+        <li>Merma proceso <b>3%</b></li>
+        <li>Merma empaque <b>1%</b></li>
+        <li>Costo orden (S) <b>$45 / pedido</b></li>
+        <li>Costo mantener (H) <b>25% anual</b></li>
       </ul>
     </div>
   </div>
-  <p style="font-size:11.5px;color:var(--suave);margin-top:12px">*El arrendamiento del galpón no entra en este presupuesto, que va en unidades.</p>
+
+  <h3><span class="dot"></span>Flujo de la cadena presupuestaria</h3>
+  <div class="flow">
+    <span class="node on">📊 Ventas</span><span class="arr">→</span>
+    <span class="node">🏭 Producción</span><span class="arr">→</span>
+    <span class="node">🧪 Requerimientos</span><span class="arr">→</span>
+    <span class="node">🛒 Compras</span>
+  </div>
+  <p style="font-size:11.5px;color:var(--suave)">*El arrendamiento del galpón no entra en este presupuesto (unidades). Los montos en USD corresponden únicamente al presupuesto de compras.</p>
 </section>
 
-<!-- ============ VENTAS ============ -->
+<!-- ══════════════ VENTAS ══════════════ -->
 <section id="ventas">
   <div class="step-label">Paso 1 de 4</div>
   <h2>Presupuesto de Ventas</h2>
-  <div class="flow"><span class="node on">Ventas</span><span class="arr">→</span><span class="node">Producción</span><span class="arr">→</span><span class="node">Requerimientos</span><span class="arr">→</span><span class="node">Compras</span></div>
-  <p class="intro">Primer eslabón. Se proyecta el total anual con el CAGR histórico y se reparte por mes con índices estacionales, manteniendo la mezcla del Año 5. Estas unidades alimentan directamente la producción.</p>
+  <div class="flow">
+    <span class="node on">📊 Ventas</span><span class="arr">→</span>
+    <span class="node">🏭 Producción</span><span class="arr">→</span>
+    <span class="node">🧪 Requerimientos</span><span class="arr">→</span>
+    <span class="node">🛒 Compras</span>
+  </div>
+  <p class="intro">Primer eslabón. Se proyecta el total anual con el CAGR histórico del 6% y se reparte por mes con índices estacionales, manteniendo la mezcla del Año 5. Estas unidades alimentan directamente la producción.</p>
 
   <div class="cards">
-    <div class="card"><div class="k">Ventas anuales</div><div class="v" id="kv-total">—</div><div class="u">envases 2 L</div></div>
-    <div class="card m"><div class="k">Mantecado</div><div class="v">47.0%</div><div class="u" id="kv-m">—</div></div>
-    <div class="card c"><div class="k">Chocolate</div><div class="v">33.0%</div><div class="u" id="kv-c">—</div></div>
-    <div class="card r"><div class="k">Ron con Pasas</div><div class="v">20.0%</div><div class="u" id="kv-r">—</div></div>
+    <div class="card"><div class="k">Ventas anuales</div><div class="v">202,580</div><div class="u">envases 2 L</div></div>
+    <div class="card m"><div class="k">Mantecado (47%)</div><div class="v">95,213</div><div class="u">unidades</div></div>
+    <div class="card c"><div class="k">Chocolate (33%)</div><div class="v">66,851</div><div class="u">unidades</div></div>
+    <div class="card r"><div class="k">Ron con Pasas (20%)</div><div class="v">40,516</div><div class="u">unidades</div></div>
   </div>
 
-  <h3>Ventas mensuales por presentación</h3>
+  <h3><span class="dot"></span>Índices estacionales (promedio = 1.00)</h3>
+  <div class="estac-grid" id="estac-grid"></div>
+
+  <h3><span class="dot"></span>Ventas mensuales por presentación</h3>
   <div class="filter">
     <label>Filtrar:</label>
     <button class="chip active" data-p="all" onclick="setVentasFilter('all',this)">Todas</button>
-    <button class="chip" data-p="Mantecado" onclick="setVentasFilter('Mantecado',this)">Mantecado</button>
-    <button class="chip" data-p="Chocolate" onclick="setVentasFilter('Chocolate',this)">Chocolate</button>
-    <button class="chip" data-p="Ron con Pasas" onclick="setVentasFilter('Ron con Pasas',this)">Ron con Pasas</button>
+    <button class="chip" data-p="Mantecado" onclick="setVentasFilter('Mantecado',this)">🍦 Mantecado</button>
+    <button class="chip" data-p="Chocolate" onclick="setVentasFilter('Chocolate',this)">🍫 Chocolate</button>
+    <button class="chip" data-p="Ron con Pasas" onclick="setVentasFilter('Ron con Pasas',this)">🍇 Ron con Pasas</button>
   </div>
   <div class="chart-box">
+    <div class="chart-title">Ventas mensuales — envases 2 L</div>
     <div class="chart-wrap"><canvas id="chVentas"></canvas></div>
-    <div class="fallnote" id="fb-ventas">No se pudo dibujar el gráfico — los datos están en la tabla siguiente.</div>
   </div>
 
-  <h3>Estacionalidad (índice, promedio = 1.0)</h3>
-  <div class="chart-box">
-    <div class="chart-wrap"><canvas id="chEstac"></canvas></div>
-    <div class="fallnote" id="fb-estac">No se pudo dibujar el gráfico — los datos están en la tabla siguiente.</div>
-  </div>
-
-  <h3>Detalle mensual (unidades)</h3>
+  <h3><span class="dot"></span>Detalle mensual (unidades)</h3>
   <div class="table-scroll" id="tbl-ventas"></div>
 </section>
 
-<!-- ============ PRODUCCIÓN ============ -->
+<!-- ══════════════ PRODUCCIÓN ══════════════ -->
 <section id="produccion">
   <div class="step-label">Paso 2 de 4</div>
   <h2>Presupuesto de Producción</h2>
-  <div class="flow"><span class="node">Ventas</span><span class="arr">→</span><span class="node on">Producción</span><span class="arr">→</span><span class="node">Requerimientos</span><span class="arr">→</span><span class="node">Compras</span></div>
+  <div class="flow">
+    <span class="node">📊 Ventas</span><span class="arr">→</span>
+    <span class="node on">🏭 Producción</span><span class="arr">→</span>
+    <span class="node">🧪 Requerimientos</span><span class="arr">→</span>
+    <span class="node">🛒 Compras</span>
+  </div>
   <p class="intro">A partir de las ventas se calcula cuánto producir: ventas + inventario final deseado − inventario inicial, redondeado a lotes enteros. La capacidad sale del calendario laboral. Esta producción define los requerimientos de insumos.</p>
 
   <div class="cards">
-    <div class="card"><div class="k">Producción anual</div><div class="v" id="kp-total">—</div><div class="u">envases 2 L</div></div>
-    <div class="card c"><div class="k">Lotes totales</div><div class="v" id="kp-lotes">—</div><div class="u">217+204+148</div></div>
-    <div class="card m"><div class="k">Utilización prom.</div><div class="v" id="kp-util">—</div><div class="u">de la capacidad</div></div>
-    <div class="card r"><div class="k">Capacidad anual</div><div class="v" id="kp-cap">—</div><div class="u">envases 2 L</div></div>
+    <div class="card"><div class="k">Producción anual</div><div class="v">203,116</div><div class="u">envases 2 L</div></div>
+    <div class="card c"><div class="k">Lotes totales</div><div class="v">569</div><div class="u">217+204+148 lotes</div></div>
+    <div class="card m"><div class="k">Utilización prom.</div><div class="v">82.4%</div><div class="u">de la capacidad</div></div>
+    <div class="card r"><div class="k">Capacidad anual</div><div class="v">246,480</div><div class="u">envases 2 L</div></div>
   </div>
 
-  <h3>Producción vs Ventas vs Capacidad</h3>
+  <h3><span class="dot"></span>Producción vs Ventas vs Capacidad (mensual)</h3>
   <div class="chart-box">
+    <div class="chart-title">Envases 2 L por mes</div>
     <div class="chart-wrap"><canvas id="chProd"></canvas></div>
-    <div class="fallnote" id="fb-prod">No se pudo dibujar el gráfico — los datos están en la tabla siguiente.</div>
   </div>
 
-  <h3>Inventario de producto terminado (final)</h3>
+  <h3><span class="dot"></span>Inventario de Producto Terminado (fin de mes)</h3>
   <div class="filter">
     <label>Filtrar:</label>
     <button class="chip active" data-p="all" onclick="setInvFilter('all',this)">Todas</button>
-    <button class="chip" data-p="Mantecado" onclick="setInvFilter('Mantecado',this)">Mantecado</button>
-    <button class="chip" data-p="Chocolate" onclick="setInvFilter('Chocolate',this)">Chocolate</button>
-    <button class="chip" data-p="Ron con Pasas" onclick="setInvFilter('Ron con Pasas',this)">Ron con Pasas</button>
+    <button class="chip" data-p="Mantecado" onclick="setInvFilter('Mantecado',this)">🍦 Mantecado</button>
+    <button class="chip" data-p="Chocolate" onclick="setInvFilter('Chocolate',this)">🍫 Chocolate</button>
+    <button class="chip" data-p="Ron con Pasas" onclick="setInvFilter('Ron con Pasas',this)">🍇 Ron con Pasas</button>
   </div>
   <div class="chart-box">
+    <div class="chart-title">Inventario final de PT — envases 2 L</div>
     <div class="chart-wrap"><canvas id="chInv"></canvas></div>
-    <div class="fallnote" id="fb-inv">No se pudo dibujar el gráfico — los datos están en la tabla siguiente.</div>
   </div>
 
-  <h3>Resumen mensual (envases)</h3>
+  <h3><span class="dot"></span>Resumen mensual (envases)</h3>
   <div class="table-scroll" id="tbl-prod"></div>
 </section>
 
-<!-- ============ REQUERIMIENTOS ============ -->
+<!-- ══════════════ REQUERIMIENTOS ══════════════ -->
 <section id="requerimientos">
   <div class="step-label">Paso 3 de 4</div>
   <h2>Presupuesto de Requerimientos</h2>
-  <div class="flow"><span class="node">Ventas</span><span class="arr">→</span><span class="node">Producción</span><span class="arr">→</span><span class="node on">Requerimientos</span><span class="arr">→</span><span class="node">Compras</span></div>
-  <p class="intro">Cada presentación tiene una cédula (receta) por envase. Multiplicando por la producción y sumando mermas (3% proceso, 1% empaque) se obtiene el consumo anual por insumo. Estos consumos son la base de las compras.</p>
+  <div class="flow">
+    <span class="node">📊 Ventas</span><span class="arr">→</span>
+    <span class="node">🏭 Producción</span><span class="arr">→</span>
+    <span class="node on">🧪 Requerimientos</span><span class="arr">→</span>
+    <span class="node">🛒 Compras</span>
+  </div>
+  <p class="intro">Cada presentación tiene una cédula (receta) por envase de 2 L. Multiplicando por la producción y sumando mermas (3% proceso, 1% empaque) se obtiene el consumo anual por insumo. Estos consumos son la base de las compras.</p>
 
   <div class="cards">
     <div class="card m"><div class="k">Merma proceso</div><div class="v">3%</div><div class="u">materia prima</div></div>
     <div class="card c"><div class="k">Merma empaque</div><div class="v">1%</div><div class="u">materiales</div></div>
-    <div class="card"><div class="k">Base láctea/año</div><div class="v" id="kr-base">—</div><div class="u">litros</div></div>
-    <div class="card r"><div class="k">Envases 2L/año</div><div class="v" id="kr-env">—</div><div class="u">unidades</div></div>
+    <div class="card g"><div class="k">Base láctea / año</div><div class="v">201,655</div><div class="u">litros</div></div>
+    <div class="card r"><div class="k">Envases 2L / año</div><div class="v">205,147</div><div class="u">unidades</div></div>
   </div>
 
-  <h3>Cédulas (receta por envase de 2 L)</h3>
+  <h3><span class="dot"></span>Cédulas de producción (receta por envase de 2 L)</h3>
   <div class="table-scroll" id="tbl-cedulas"></div>
 
-  <h3>Insumos de mayor consumo (total anual)</h3>
-  <p style="font-size:12px;color:var(--suave);margin:-4px 0 10px">Cada insumo en su propia unidad (L, kg, g, ml, ud); no se suman entre sí.</p>
+  <h3><span class="dot"></span>Principales insumos — consumo anual</h3>
+  <p style="font-size:12px;color:var(--suave);margin:-6px 0 12px">Cada insumo en su propia unidad (L, kg, g, ml, ud). No son comparables entre sí.</p>
   <div class="chart-box">
+    <div class="chart-title">Consumo anual por insumo (cada uno en su unidad)</div>
     <div class="chart-wrap"><canvas id="chReq"></canvas></div>
-    <div class="fallnote" id="fb-req">No se pudo dibujar el gráfico — los datos están en la tabla siguiente.</div>
   </div>
 
-  <h3>Consumo anual consolidado por insumo</h3>
+  <h3><span class="dot"></span>Consumo anual consolidado por insumo</h3>
   <div class="table-scroll" id="tbl-req"></div>
 </section>
 
-<!-- ============ COMPRAS ============ -->
+<!-- ══════════════ COMPRAS ══════════════ -->
 <section id="compras">
   <div class="step-label">Paso 4 de 4 · cierre</div>
   <h2>Presupuesto de Compras</h2>
-  <div class="flow"><span class="node">Ventas</span><span class="arr">→</span><span class="node">Producción</span><span class="arr">→</span><span class="node">Requerimientos</span><span class="arr">→</span><span class="node on">Compras</span></div>
+  <div class="flow">
+    <span class="node">📊 Ventas</span><span class="arr">→</span>
+    <span class="node">🏭 Producción</span><span class="arr">→</span>
+    <span class="node">🧪 Requerimientos</span><span class="arr">→</span>
+    <span class="node on">🛒 Compras</span>
+  </div>
   <p class="intro">Último eslabón y centro del proyecto. El consumo de insumos se convierte en órdenes de compra reales: se respeta la frecuencia del proveedor y la cantidad mínima de pedido (MOQ), se sostiene un inventario de seguridad, y se valora con precios mensuales que suben por inflación. El análisis de Wilson evalúa, insumo por insumo, si el lote económico teórico es aplicable.</p>
 
   <div class="cards">
-    <div class="card"><div class="k">Compra total anual</div><div class="v" id="kc-total">—</div><div class="u">USD</div></div>
-    <div class="card m"><div class="k">Top insumo</div><div class="v" style="font-size:16px">Base láctea</div><div class="u" id="kc-top1">—</div></div>
-    <div class="card c"><div class="k">2º insumo</div><div class="v" style="font-size:16px">Envase 2L</div><div class="u" id="kc-top2">—</div></div>
-    <div class="card r"><div class="k">Insumos</div><div class="v">14</div><div class="u">referencias</div></div>
+    <div class="card"><div class="k">Compra total anual</div><div class="v">$289,740</div><div class="u">USD</div></div>
+    <div class="card m"><div class="k">Top insumo</div><div class="v" style="font-size:16px">Base láctea</div><div class="u">≈ $155,300 USD</div></div>
+    <div class="card c"><div class="k">2º insumo</div><div class="v" style="font-size:16px">Envase 2L</div><div class="u">≈ $51,200 USD</div></div>
+    <div class="card r"><div class="k">Referencias</div><div class="v">14</div><div class="u">insumos diferentes</div></div>
   </div>
 
-  <h3>Premisas del presupuesto de compras</h3>
-  <p style="font-size:12.5px;color:var(--suave);margin:-4px 0 12px">Estos son los supuestos que gobiernan todo el cálculo. A diferencia de los tres presupuestos anteriores (en unidades), aquí <b>sí entra el dinero</b>: precios en USD con inflación.</p>
+  <h3><span class="dot"></span>Premisas del presupuesto de compras</h3>
   <div class="premisas">
     <div class="prem">
-      <span class="tag">Económicas</span>
+      <span class="tag">ECONÓMICAS</span>
       <h4>💵 Precios e inflación</h4>
-      <p>Inflación anual en USD de <b>6%</b>, convertida a una tasa mensual compuesta de <b>0,4868%</b>. El precio del mes <i>m</i> = precio base × (1 + mensual)<sup>m−1</sup>. Enero usa el precio base; cada mes sube.</p>
+      <p>Inflación anual en USD de <b>6%</b>, convertida a una tasa mensual compuesta de <b>0.4868%</b>. El precio del mes <i>m</i> = precio base × (1 + mensual)<sup>m−1</sup>. Enero usa el precio base; cada mes sube.</p>
     </div>
     <div class="prem">
-      <span class="tag">Modelo EOQ</span>
+      <span class="tag">MODELO EOQ</span>
       <h4>📦 Costos de Wilson</h4>
-      <p>Costo de emitir un pedido <b>S = $45</b> por orden. Costo de mantener <b>H = 25% anual</b> del valor unitario (H = precio × 0,25). Con esto se calcula el EOQ teórico de cada insumo.</p>
+      <p>Costo de emitir un pedido <b>S = $45</b> por orden. Costo de mantener <b>H = 25% anual</b> del valor unitario. Con esto se calcula el EOQ teórico de cada insumo.</p>
     </div>
     <div class="prem">
-      <span class="tag">Inventario</span>
+      <span class="tag">INVENTARIO</span>
       <h4>🛡️ Stock de seguridad</h4>
-      <p>Inventario final mínimo = consumo del mes × cobertura (días) ÷ 30. La cobertura depende de la perecibilidad y el lead time: <b>7 días</b> perecederos, <b>20–25</b> rotación media, <b>40–50</b> baja rotación.</p>
+      <p>Inventario final mínimo = consumo del mes × cobertura (días) ÷ 30. Cobertura: <b>7 días</b> perecederos, <b>20–25</b> rotación media, <b>40–50</b> baja rotación.</p>
     </div>
     <div class="prem">
-      <span class="tag">Proveedor</span>
+      <span class="tag">PROVEEDOR</span>
       <h4>🚚 Restricciones rígidas</h4>
-      <p>Se respeta <b>siempre</b> la frecuencia de despacho (semanal, mensual o bimestral) y la cantidad mínima de pedido (MOQ). En meses sin despacho la compra es 0 y el stock cubre el consumo.</p>
+      <p>Se respeta <b>siempre</b> la frecuencia de despacho (semanal, mensual o bimestral) y la cantidad mínima de pedido (MOQ). En meses sin despacho la compra es 0.</p>
     </div>
     <div class="prem">
-      <span class="tag">Regla de oro</span>
+      <span class="tag">REGLA DE ORO</span>
       <h4>✅ Sin quiebre de stock</h4>
-      <p>El inventario final real de cada mes debe ser <b>≥ inventario de seguridad</b>. La compra se redondea hacia arriba al múltiplo del MOQ, y el excedente engrosa el inventario del mes siguiente.</p>
+      <p>El inventario final real de cada mes debe ser <b>≥ inventario de seguridad</b>. La compra se redondea hacia arriba al múltiplo del MOQ.</p>
     </div>
     <div class="prem">
-      <span class="tag">Insumo base</span>
+      <span class="tag">INSUMO BASE</span>
       <h4>🔗 Consumo heredado</h4>
-      <p>El consumo mensual de cada insumo proviene tal cual de <b>Requerimientos Consolidados</b>; no se recalcula ni se altera. Compras solo decide <i>cuándo</i> y <i>cuánto</i> pedir.</p>
+      <p>El consumo mensual proviene tal cual de <b>Requerimientos Consolidados</b>. Compras solo decide <i>cuándo</i> y <i>cuánto</i> pedir.</p>
     </div>
   </div>
 
-  <h3>Cómo se elabora, mes a mes</h3>
-  <p style="font-size:12.5px;color:var(--suave);margin:-4px 0 10px">La cédula de compra de cada insumo sigue esta secuencia. La ecuación base del método clásico de compras es:</p>
+  <h3><span class="dot"></span>Secuencia de cálculo mensual</h3>
   <div class="eq">Compra necesaria = Consumo + Inv. seguridad − Inv. inicial</div>
   <ol class="steps">
-    <li><b>Consumo del mes.</b> Se toma el requerimiento del insumo (suma de las presentaciones que lo usan), heredado de Requerimientos.</li>
-    <li><b>(+) Inventario de seguridad.</b> Stock final mínimo del mes según su cobertura en días.<span class="formula">Inv. seguridad = consumo × días cobertura ÷ 30</span></li>
+    <li><b>Consumo del mes.</b> Se toma el requerimiento del insumo, heredado de Requerimientos.</li>
+    <li><b>(+) Inventario de seguridad.</b> Stock final mínimo según su cobertura en días.<span class="formula">Inv. seguridad = consumo × días_cobertura ÷ 30</span></li>
     <li><b>(−) Inventario inicial.</b> Es el inventario final real del mes anterior (encadenado).</li>
-    <li><b>(=) Compra necesaria.</b> Lo que faltaría comprar si no hubiera restricciones de proveedor.</li>
-    <li><b>Ajuste al proveedor.</b> Se redondea hacia arriba al múltiplo del MOQ y se respeta la frecuencia: si el proveedor no despacha ese mes, la compra es 0.<span class="formula">Compra ajustada = múltiplo del MOQ ≥ compra necesaria</span></li>
-    <li><b>Valoración en USD.</b> Unidades compradas × precio del mes (con inflación) = desembolso del mes.<span class="formula">Monto USD = compra ajustada × precio del mes</span></li>
-    <li><b>Reconciliación.</b> Inv. final = inv. inicial + compras − consumo. Se verifica que sea ≥ inv. seguridad (nunca hay quiebre).</li>
+    <li><b>(=) Compra necesaria.</b> Lo que faltaría comprar sin restricciones de proveedor.</li>
+    <li><b>Ajuste al proveedor.</b> Se redondea al múltiplo del MOQ y se respeta la frecuencia.<span class="formula">Compra ajustada = múltiplo del MOQ ≥ compra necesaria</span></li>
+    <li><b>Valoración en USD.</b> Unidades compradas × precio del mes (con inflación).<span class="formula">Monto USD = compra ajustada × precio_mes</span></li>
+    <li><b>Reconciliación.</b> Inv. final = inv. inicial + compras − consumo ≥ inv. seguridad.</li>
   </ol>
 
   <div class="worked">
     <h4>Ejemplo trabajado · Base láctea, Enero (proveedor semanal, MOQ 500 L)</h4>
-    <div class="line"><span>(1) Consumo del mes</span><b>16.804,45 L</b></div>
-    <div class="line"><span>(2) (+) Inventario de seguridad (7 días)</span><b>3.921 L</b></div>
-    <div class="line"><span>(3) (−) Inventario inicial (apertura)</span><b>3.921 L</b></div>
-    <div class="line"><span>(4) (=) Compra necesaria</span><b>16.804,45 L</b></div>
-    <div class="line"><span>(5) Compra ajustada al MOQ (múltiplo de 500)</span><b>17.000 L</b></div>
-    <div class="line"><span>Precio del mes (enero = base)</span><b>$0,95 / L</b></div>
-    <div class="line res"><span>(6) Monto de compra</span><b>$16.150</b></div>
+    <div class="line"><span>(1) Consumo del mes</span><b>16,804.45 L</b></div>
+    <div class="line"><span>(2) (+) Inventario de seguridad (7 días)</span><b>3,921 L</b></div>
+    <div class="line"><span>(3) (−) Inventario inicial (apertura)</span><b>3,921 L</b></div>
+    <div class="line"><span>(4) (=) Compra necesaria</span><b>16,804.45 L</b></div>
+    <div class="line"><span>(5) Compra ajustada al MOQ (múltiplo de 500)</span><b>17,000 L</b></div>
+    <div class="line"><span>Precio del mes (enero = base)</span><b>$0.95 / L</b></div>
+    <div class="line res"><span>(6) Monto de compra</span><b>$16,150</b></div>
   </div>
-  <p style="font-size:11.5px;color:var(--suave);margin-top:8px">El excedente del redondeo (17.000 − 16.804,45 = 195,55 L) pasa a ser inventario inicial de febrero, y así se encadena todo el año.</p>
 
-  <h3>Compras mensuales totales (USD)</h3>
+  <h3><span class="dot"></span>Compras mensuales totales (USD)</h3>
   <div class="chart-box">
+    <div class="chart-title">Desembolso mensual total — USD</div>
     <div class="chart-wrap"><canvas id="chCompMes"></canvas></div>
-    <div class="fallnote" id="fb-compmes">No se pudo dibujar el gráfico — los datos están en la tabla siguiente.</div>
   </div>
 
-  <h3>Compra anual por insumo (USD)</h3>
+  <h3><span class="dot"></span>Compra anual por insumo (USD)</h3>
   <div class="chart-box">
+    <div class="chart-title">Total anual por insumo — USD</div>
     <div class="chart-wrap"><canvas id="chCompIns"></canvas></div>
-    <div class="fallnote" id="fb-compins">No se pudo dibujar el gráfico — los datos están en la tabla siguiente.</div>
   </div>
 
-  <h3>Análisis de Wilson (EOQ) — decisión por insumo</h3>
-  <p style="font-size:12.5px;color:var(--suave);margin:-4px 0 10px">El EOQ teórico minimiza el costo total de pedido + mantenimiento, pero <b>asume demanda constante y reabastecimiento libre</b>. Las restricciones reales del proveedor (frecuencia fija y MOQ) a menudo lo invalidan. Por eso cada insumo recibe una de tres decisiones:</p>
+  <h3><span class="dot"></span>Análisis de Wilson (EOQ)</h3>
   <div class="eq">EOQ = √( 2 · D · S / H )</div>
   <div class="pill-row">
     <span class="pill">✔ Aplica (≈ mensual): azúcar, cacao, cobertura, envase</span>
-    <span class="pill">↔️ Se ajusta a MOQ / frecuencia: estabilizante, vainilla, colorante, pasas, esencia de ron, tapa, 3 etiquetas</span>
-    <span class="pill">✘ No aplica: base láctea</span>
+    <span class="pill">↔ Se ajusta: estabilizante, vainilla, colorante, pasas, esencia ron, tapa, etiquetas</span>
+    <span class="pill">✘ No aplica: base láctea (perecedera, semanal)</span>
   </div>
-  <p style="font-size:11.5px;color:var(--suave);margin:0 0 10px"><b>Base láctea</b> es el caso que no aplica: por ser perecedera y despacharse semanalmente, mantener el EOQ teórico (~8.410 L, varias semanas de consumo) provocaría mermas y riesgo sanitario; manda el criterio logístico.</p>
   <div class="table-scroll" id="tbl-wilson"></div>
 
-  <h3>Proveedores y condiciones</h3>
+  <h3><span class="dot"></span>Proveedores y condiciones</h3>
   <div class="table-scroll" id="tbl-prov"></div>
 
-  <h3>Compras mensuales por insumo (USD)</h3>
+  <h3><span class="dot"></span>Compras mensuales por insumo (USD)</h3>
   <div class="table-scroll" id="tbl-compras"></div>
 
   <div class="note">
-    <b>Fuente de los datos (archivo Presupuesto_Ventas_ManteChoco.xlsx):</b><br>
-    • <b>La Empresa</b>: hojas «Supuestos» y «Supuestos Producción».<br>
-    • <b>Ventas</b>: «Presupuesto Ventas» (detalle y mezcla) y «Estacionalidad» (índices).<br>
-    • <b>Producción</b>: «Presupuesto Producción» (resumen y lotes), «Capacidad» e «Inventario PT».<br>
-    • <b>Requerimientos</b>: «Cédulas (Recetas)» y «Requerimientos Consolidados».<br>
-    • <b>Compras</b>: «Presupuesto Compras (USD)», «Análisis Wilson (EOQ)» y «Proveedores».<br>
-    <b>Si se actualiza un Excel:</b> hay que volver a extraer los datos y regenerar este HTML; las cifras están incrustadas y no se recalculan solas.
+    <b>Fuente de los datos (Presupuesto_Ventas_ManteChoco.xlsx):</b><br>
+    • <b>La Empresa:</b> hojas «Supuestos» y «Supuestos Producción».<br>
+    • <b>Ventas:</b> «Presupuesto Ventas» y «Estacionalidad».<br>
+    • <b>Producción:</b> «Presupuesto Producción», «Capacidad» e «Inventario PT».<br>
+    • <b>Requerimientos:</b> «Cédulas (Recetas)» y «Requerimientos Consolidados».<br>
+    • <b>Compras:</b> «Presupuesto Compras (USD)», «Análisis Wilson (EOQ)» y «Proveedores».<br>
+    <b>Nota:</b> Las cifras están incrustadas y no se recalculan si el Excel se actualiza.
   </div>
 </section>
 
-<!-- ============ PROMPTS ============ -->
+<!-- ══════════════ PROMPTS ══════════════ -->
 <section id="prompts">
   <div class="step-label">Anexo metodológico</div>
   <h2>Prompts utilizados</h2>
-  <p class="intro">Estos son los cinco prompts que construyeron el proyecto, en el orden de la cadena: un prompt por presupuesto (Ventas, Producción, Requerimientos, Compras) más el del Dashboard. Cada uno se usó en su chat correspondiente y parte del resultado del anterior. Toca un encabezado para desplegar el prompt y usar el botón <b>Copiar</b>.</p>
+  <p class="intro">Estos son los cinco prompts que construyeron el proyecto, en el orden de la cadena: un prompt por presupuesto más el del Dashboard. Cada uno parte del resultado del anterior. Toca un encabezado para desplegar el prompt completo y usar el botón <b>Copiar</b>.</p>
   <div class="prompt-grid" id="prompt-grid"></div>
 </section>
+
 </main>
 
-<!-- Chart.js v4.4.1 embebido (MIT License) — el dashboard funciona sin internet -->
 <script>
-/*!
- * Chart.js v4.4.1
- * https://www.chartjs.org
- * (c) 2023 Chart.js Contributors
- * Released under the MIT License
- */
-!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?module.exports=e():"function"==typeof define&&define.amd?define(e):(t="undefined"!=typeof globalThis?globalThis:t||self).Chart=e()}(this,(function(){"use strict";var t=Object.freeze({__proto__:null,get Colors(){return Go},get Decimation(){return Qo},get Filler(){return ma},get Legend(){return ya},get SubTitle(){return ka},get Title(){return Ma},get Tooltip(){return Ba}});function e(){}const i=(()=>{let t=0;return()=>t++})();function s(t){return null==t}function n(t){if(Array.isArray&&Array.isArray(t))return!0;const e=Object.prototype.toString.call(t);return"[object"===e.slice(0,7)&&"Array]"===e.slice(-6)}function o(t){return null!==t&&"[object Object]"===Object.prototype.toString.call(t)}function a(t){return("number"==typeof t||t instanceof Number)&&isFinite(+t)}function r(t,e){return a(t)?t:e}function l(t,e){return void 0===t?e:t}const h=(t,e)=>"string"==typeof t&&t.endsWith("%")?parseFloat(t)/100:+t/e,c=(t,e)=>"string"==typeof t&&t.endsWith("%")?parseFloat(t)/100*e:+t;function d(t,e,i){if(t&&"function"==typeof t.call)return t.apply(i,e)}function u(t,e,i,s){let a,r,l;if(n(t))if(r=t.length,s)for(a=r-1;a>=0;a--)e.call(i,t[a],a);else for(a=0;a<r;a++)e.call(i,t[a],a);else if(o(t))for(l=Object.keys(t),r=l.length,a=0;a<r;a++)e.call(i,t[l[a]],l[a])}function f(t,e){let i,s,n,o;if(!t||!e||t.length!==e.length)return!1;for(i=0,s=t.length;i<s;++i)if(n=t[i],o=e[i],n.datasetIndex!==o.datasetIndex||n.index!==o.index)return!1;return!0}function g(t){if(n(t))return t.map(g);if(o(t)){const e=Object.create(null),i=Object.keys(t),s=i.length;let n=0;for(;n<s;++n)e[i[n]]=g(t[i[n]]);return e}return t}function p(t){return-1===["__proto__","prototype","constructor"].indexOf(t)}function m(t,e,i,s){if(!p(t))return;const n=e[t],a=i[t];o(n)&&o(a)?b(n,a,s):e[t]=g(a)}function b(t,e,i){const s=n(e)?e:[e],a=s.length;if(!o(t))return t;const r=(i=i||{}).merger||m;let l;for(let e=0;e<a;++e){if(l=s[e],!o(l))continue;const n=Object.keys(l);for(let e=0,s=n.length;e<s;++e)r(n[e],t,l,i)}return t}function x(t,e){return b(t,e,{merger:_})}function _(t,e,i){if(!p(t))return;const s=e[t],n=i[t];o(s)&&o(n)?x(s,n):Object.prototype.hasOwnProperty.call(e,t)||(e[t]=g(n))}const y={"":t=>t,x:t=>t.x,y:t=>t.y};function v(t){const e=t.split("."),i=[];let s="";for(const t of e)s+=t,s.endsWith("\\")?s=s.slice(0,-1)+".":(i.push(s),s="");return i}function M(t,e){const i=y[e]||(y[e]=function(t){const e=v(t);return t=>{for(const i of e){if(""===i)break;t=t&&t[i]}return t}}(e));return i(t)}function w(t){return t.charAt(0).toUpperCase()+t.slice(1)}const k=t=>void 0!==t,S=t=>"function"==typeof t,P=(t,e)=>{if(t.size!==e.size)return!1;for(const i of t)if(!e.has(i))return!1;return!0};function D(t){return"mouseup"===t.type||"click"===t.type||"contextmenu"===t.type}const C=Math.PI,O=2*C,A=O+C,T=Number.POSITIVE_INFINITY,L=C/180,E=C/2,R=C/4,I=2*C/3,z=Math.log10,F=Math.sign;function V(t,e,i){return Math.abs(t-e)<i}function B(t){const e=Math.round(t);t=V(t,e,t/1e3)?e:t;const i=Math.pow(10,Math.floor(z(t))),s=t/i;return(s<=1?1:s<=2?2:s<=5?5:10)*i}function W(t){const e=[],i=Math.sqrt(t);let s;for(s=1;s<i;s++)t%s==0&&(e.push(s),e.push(t/s));return i===(0|i)&&e.push(i),e.sort(((t,e)=>t-e)).pop(),e}function N(t){return!isNaN(parseFloat(t))&&isFinite(t)}function H(t,e){const i=Math.round(t);return i-e<=t&&i+e>=t}function j(t,e,i){let s,n,o;for(s=0,n=t.length;s<n;s++)o=t[s][i],isNaN(o)||(e.min=Math.min(e.min,o),e.max=Math.max(e.max,o))}function $(t){return t*(C/180)}function Y(t){return t*(180/C)}function U(t){if(!a(t))return;let e=1,i=0;for(;Math.round(t*e)/e!==t;)e*=10,i++;return i}function X(t,e){const i=e.x-t.x,s=e.y-t.y,n=Math.sqrt(i*i+s*s);let o=Math.atan2(s,i);return o<-.5*C&&(o+=O),{angle:o,distance:n}}function q(t,e){return Math.sqrt(Math.pow(e.x-t.x,2)+Math.pow(e.y-t.y,2))}function K(t,e){return(t-e+A)%O-C}function G(t){return(t%O+O)%O}function Z(t,e,i,s){const n=G(t),o=G(e),a=G(i),r=G(o-n),l=G(a-n),h=G(n-o),c=G(n-a);return n===o||n===a||s&&o===a||r>l&&h<c}function J(t,e,i){return Math.max(e,Math.min(i,t))}function Q(t){return J(t,-32768,32767)}function tt(t,e,i,s=1e-6){return t>=Math.min(e,i)-s&&t<=Math.max(e,i)+s}function et(t,e,i){i=i||(i=>t[i]<e);let s,n=t.length-1,o=0;for(;n-o>1;)s=o+n>>1,i(s)?o=s:n=s;return{lo:o,hi:n}}const it=(t,e,i,s)=>et(t,i,s?s=>{const n=t[s][e];return n<i||n===i&&t[s+1][e]===i}:s=>t[s][e]<i),st=(t,e,i)=>et(t,i,(s=>t[s][e]>=i));function nt(t,e,i){let s=0,n=t.length;for(;s<n&&t[s]<e;)s++;for(;n>s&&t[n-1]>i;)n--;return s>0||n<t.length?t.slice(s,n):t}const ot=["push","pop","shift","splice","unshift"];function at(t,e){t._chartjs?t._chartjs.listeners.push(e):(Object.defineProperty(t,"_chartjs",{configurable:!0,enumerable:!1,value:{listeners:[e]}}),ot.forEach((e=>{const i="_onData"+w(e),s=t[e];Object.defineProperty(t,e,{configurable:!0,enumerable:!1,value(...e){const n=s.apply(this,e);return t._chartjs.listeners.forEach((t=>{"function"==typeof t[i]&&t[i](...e)})),n}})})))}function rt(t,e){const i=t._chartjs;if(!i)return;const s=i.listeners,n=s.indexOf(e);-1!==n&&s.splice(n,1),s.length>0||(ot.forEach((e=>{delete t[e]})),delete t._chartjs)}function lt(t){const e=new Set(t);return e.size===t.length?t:Array.from(e)}const ht="undefined"==typeof window?function(t){return t()}:window.requestAnimationFrame;function ct(t,e){let i=[],s=!1;return function(...n){i=n,s||(s=!0,ht.call(window,(()=>{s=!1,t.apply(e,i)})))}}function dt(t,e){let i;return function(...s){return e?(clearTimeout(i),i=setTimeout(t,e,s)):t.apply(this,s),e}}const ut=t=>"start"===t?"left":"end"===t?"right":"center",ft=(t,e,i)=>"start"===t?e:"end"===t?i:(e+i)/2,gt=(t,e,i,s)=>t===(s?"left":"right")?i:"center"===t?(e+i)/2:e;function pt(t,e,i){const s=e.length;let n=0,o=s;if(t._sorted){const{iScale:a,_parsed:r}=t,l=a.axis,{min:h,max:c,minDefined:d,maxDefined:u}=a.getUserBounds();d&&(n=J(Math.min(it(r,l,h).lo,i?s:it(e,l,a.getPixelForValue(h)).lo),0,s-1)),o=u?J(Math.max(it(r,a.axis,c,!0).hi+1,i?0:it(e,l,a.getPixelForValue(c),!0).hi+1),n,s)-n:s-n}return{start:n,count:o}}function mt(t){const{xScale:e,yScale:i,_scaleRanges:s}=t,n={xmin:e.min,xmax:e.max,ymin:i.min,ymax:i.max};if(!s)return t._scaleRanges=n,!0;const o=s.xmin!==e.min||s.xmax!==e.max||s.ymin!==i.min||s.ymax!==i.max;return Object.assign(s,n),o}class bt{constructor(){this._request=null,this._charts=new Map,this._running=!1,this._lastDate=void 0}_notify(t,e,i,s){const n=e.listeners[s],o=e.duration;n.forEach((s=>s({chart:t,initial:e.initial,numSteps:o,currentStep:Math.min(i-e.start,o)})))}_refresh(){this._request||(this._running=!0,this._request=ht.call(window,(()=>{this._update(),this._request=null,this._running&&this._refresh()})))}_update(t=Date.now()){let e=0;this._charts.forEach(((i,s)=>{if(!i.running||!i.items.length)return;const n=i.items;let o,a=n.length-1,r=!1;for(;a>=0;--a)o=n[a],o._active?(o._total>i.duration&&(i.duration=o._total),o.tick(t),r=!0):(n[a]=n[n.length-1],n.pop());r&&(s.draw(),this._notify(s,i,t,"progress")),n.length||(i.running=!1,this._notify(s,i,t,"complete"),i.initial=!1),e+=n.length})),this._lastDate=t,0===e&&(this._running=!1)}_getAnims(t){const e=this._charts;let i=e.get(t);return i||(i={running:!1,initial:!0,items:[],listeners:{complete:[],progress:[]}},e.set(t,i)),i}listen(t,e,i){this._getAnims(t).listeners[e].push(i)}add(t,e){e&&e.length&&this._getAnims(t).items.push(...e)}has(t){return this._getAnims(t).items.length>0}start(t){const e=this._charts.get(t);e&&(e.running=!0,e.start=Date.now(),e.duration=e.items.reduce(((t,e)=>Math.max(t,e._duration)),0),this._refresh())}running(t){if(!this._running)return!1;const e=this._charts.get(t);return!!(e&&e.running&&e.items.length)}stop(t){const e=this._charts.get(t);if(!e||!e.items.length)return;const i=e.items;let s=i.length-1;for(;s>=0;--s)i[s].cancel();e.items=[],this._notify(t,e,Date.now(),"complete")}remove(t){return this._charts.delete(t)}}var xt=new bt;
-/*!
- * @kurkle/color v0.3.2
- * https://github.com/kurkle/color#readme
- * (c) 2023 Jukka Kurkela
- * Released under the MIT License
- */function _t(t){return t+.5|0}const yt=(t,e,i)=>Math.max(Math.min(t,i),e);function vt(t){return yt(_t(2.55*t),0,255)}function Mt(t){return yt(_t(255*t),0,255)}function wt(t){return yt(_t(t/2.55)/100,0,1)}function kt(t){return yt(_t(100*t),0,100)}const St={0:0,1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,A:10,B:11,C:12,D:13,E:14,F:15,a:10,b:11,c:12,d:13,e:14,f:15},Pt=[..."0123456789ABCDEF"],Dt=t=>Pt[15&t],Ct=t=>Pt[(240&t)>>4]+Pt[15&t],Ot=t=>(240&t)>>4==(15&t);function At(t){var e=(t=>Ot(t.r)&&Ot(t.g)&&Ot(t.b)&&Ot(t.a))(t)?Dt:Ct;return t?"#"+e(t.r)+e(t.g)+e(t.b)+((t,e)=>t<255?e(t):"")(t.a,e):void 0}const Tt=/^(hsla?|hwb|hsv)\(\s*([-+.e\d]+)(?:deg)?[\s,]+([-+.e\d]+)%[\s,]+([-+.e\d]+)%(?:[\s,]+([-+.e\d]+)(%)?)?\s*\)$/;function Lt(t,e,i){const s=e*Math.min(i,1-i),n=(e,n=(e+t/30)%12)=>i-s*Math.max(Math.min(n-3,9-n,1),-1);return[n(0),n(8),n(4)]}function Et(t,e,i){const s=(s,n=(s+t/60)%6)=>i-i*e*Math.max(Math.min(n,4-n,1),0);return[s(5),s(3),s(1)]}function Rt(t,e,i){const s=Lt(t,1,.5);let n;for(e+i>1&&(n=1/(e+i),e*=n,i*=n),n=0;n<3;n++)s[n]*=1-e-i,s[n]+=e;return s}function It(t){const e=t.r/255,i=t.g/255,s=t.b/255,n=Math.max(e,i,s),o=Math.min(e,i,s),a=(n+o)/2;let r,l,h;return n!==o&&(h=n-o,l=a>.5?h/(2-n-o):h/(n+o),r=function(t,e,i,s,n){return t===n?(e-i)/s+(e<i?6:0):e===n?(i-t)/s+2:(t-e)/s+4}(e,i,s,h,n),r=60*r+.5),[0|r,l||0,a]}function zt(t,e,i,s){return(Array.isArray(e)?t(e[0],e[1],e[2]):t(e,i,s)).map(Mt)}function Ft(t,e,i){return zt(Lt,t,e,i)}function Vt(t){return(t%360+360)%360}function Bt(t){const e=Tt.exec(t);let i,s=255;if(!e)return;e[5]!==i&&(s=e[6]?vt(+e[5]):Mt(+e[5]));const n=Vt(+e[2]),o=+e[3]/100,a=+e[4]/100;return i="hwb"===e[1]?function(t,e,i){return zt(Rt,t,e,i)}(n,o,a):"hsv"===e[1]?function(t,e,i){return zt(Et,t,e,i)}(n,o,a):Ft(n,o,a),{r:i[0],g:i[1],b:i[2],a:s}}const Wt={x:"dark",Z:"light",Y:"re",X:"blu",W:"gr",V:"medium",U:"slate",A:"ee",T:"ol",S:"or",B:"ra",C:"lateg",D:"ights",R:"in",Q:"turquois",E:"hi",P:"ro",O:"al",N:"le",M:"de",L:"yello",F:"en",K:"ch",G:"arks",H:"ea",I:"ightg",J:"wh"},Nt={OiceXe:"f0f8ff",antiquewEte:"faebd7",aqua:"ffff",aquamarRe:"7fffd4",azuY:"f0ffff",beige:"f5f5dc",bisque:"ffe4c4",black:"0",blanKedOmond:"ffebcd",Xe:"ff",XeviTet:"8a2be2",bPwn:"a52a2a",burlywood:"deb887",caMtXe:"5f9ea0",KartYuse:"7fff00",KocTate:"d2691e",cSO:"ff7f50",cSnflowerXe:"6495ed",cSnsilk:"fff8dc",crimson:"dc143c",cyan:"ffff",xXe:"8b",xcyan:"8b8b",xgTMnPd:"b8860b",xWay:"a9a9a9",xgYF:"6400",xgYy:"a9a9a9",xkhaki:"bdb76b",xmagFta:"8b008b",xTivegYF:"556b2f",xSange:"ff8c00",xScEd:"9932cc",xYd:"8b0000",xsOmon:"e9967a",xsHgYF:"8fbc8f",xUXe:"483d8b",xUWay:"2f4f4f",xUgYy:"2f4f4f",xQe:"ced1",xviTet:"9400d3",dAppRk:"ff1493",dApskyXe:"bfff",dimWay:"696969",dimgYy:"696969",dodgerXe:"1e90ff",fiYbrick:"b22222",flSOwEte:"fffaf0",foYstWAn:"228b22",fuKsia:"ff00ff",gaRsbSo:"dcdcdc",ghostwEte:"f8f8ff",gTd:"ffd700",gTMnPd:"daa520",Way:"808080",gYF:"8000",gYFLw:"adff2f",gYy:"808080",honeyMw:"f0fff0",hotpRk:"ff69b4",RdianYd:"cd5c5c",Rdigo:"4b0082",ivSy:"fffff0",khaki:"f0e68c",lavFMr:"e6e6fa",lavFMrXsh:"fff0f5",lawngYF:"7cfc00",NmoncEffon:"fffacd",ZXe:"add8e6",ZcSO:"f08080",Zcyan:"e0ffff",ZgTMnPdLw:"fafad2",ZWay:"d3d3d3",ZgYF:"90ee90",ZgYy:"d3d3d3",ZpRk:"ffb6c1",ZsOmon:"ffa07a",ZsHgYF:"20b2aa",ZskyXe:"87cefa",ZUWay:"778899",ZUgYy:"778899",ZstAlXe:"b0c4de",ZLw:"ffffe0",lime:"ff00",limegYF:"32cd32",lRF:"faf0e6",magFta:"ff00ff",maPon:"800000",VaquamarRe:"66cdaa",VXe:"cd",VScEd:"ba55d3",VpurpN:"9370db",VsHgYF:"3cb371",VUXe:"7b68ee",VsprRggYF:"fa9a",VQe:"48d1cc",VviTetYd:"c71585",midnightXe:"191970",mRtcYam:"f5fffa",mistyPse:"ffe4e1",moccasR:"ffe4b5",navajowEte:"ffdead",navy:"80",Tdlace:"fdf5e6",Tive:"808000",TivedBb:"6b8e23",Sange:"ffa500",SangeYd:"ff4500",ScEd:"da70d6",pOegTMnPd:"eee8aa",pOegYF:"98fb98",pOeQe:"afeeee",pOeviTetYd:"db7093",papayawEp:"ffefd5",pHKpuff:"ffdab9",peru:"cd853f",pRk:"ffc0cb",plum:"dda0dd",powMrXe:"b0e0e6",purpN:"800080",YbeccapurpN:"663399",Yd:"ff0000",Psybrown:"bc8f8f",PyOXe:"4169e1",saddNbPwn:"8b4513",sOmon:"fa8072",sandybPwn:"f4a460",sHgYF:"2e8b57",sHshell:"fff5ee",siFna:"a0522d",silver:"c0c0c0",skyXe:"87ceeb",UXe:"6a5acd",UWay:"708090",UgYy:"708090",snow:"fffafa",sprRggYF:"ff7f",stAlXe:"4682b4",tan:"d2b48c",teO:"8080",tEstN:"d8bfd8",tomato:"ff6347",Qe:"40e0d0",viTet:"ee82ee",JHt:"f5deb3",wEte:"ffffff",wEtesmoke:"f5f5f5",Lw:"ffff00",LwgYF:"9acd32"};let Ht;function jt(t){Ht||(Ht=function(){const t={},e=Object.keys(Nt),i=Object.keys(Wt);let s,n,o,a,r;for(s=0;s<e.length;s++){for(a=r=e[s],n=0;n<i.length;n++)o=i[n],r=r.replace(o,Wt[o]);o=parseInt(Nt[a],16),t[r]=[o>>16&255,o>>8&255,255&o]}return t}(),Ht.transparent=[0,0,0,0]);const e=Ht[t.toLowerCase()];return e&&{r:e[0],g:e[1],b:e[2],a:4===e.length?e[3]:255}}const $t=/^rgba?\(\s*([-+.\d]+)(%)?[\s,]+([-+.e\d]+)(%)?[\s,]+([-+.e\d]+)(%)?(?:[\s,/]+([-+.e\d]+)(%)?)?\s*\)$/;const Yt=t=>t<=.0031308?12.92*t:1.055*Math.pow(t,1/2.4)-.055,Ut=t=>t<=.04045?t/12.92:Math.pow((t+.055)/1.055,2.4);function Xt(t,e,i){if(t){let s=It(t);s[e]=Math.max(0,Math.min(s[e]+s[e]*i,0===e?360:1)),s=Ft(s),t.r=s[0],t.g=s[1],t.b=s[2]}}function qt(t,e){return t?Object.assign(e||{},t):t}function Kt(t){var e={r:0,g:0,b:0,a:255};return Array.isArray(t)?t.length>=3&&(e={r:t[0],g:t[1],b:t[2],a:255},t.length>3&&(e.a=Mt(t[3]))):(e=qt(t,{r:0,g:0,b:0,a:1})).a=Mt(e.a),e}function Gt(t){return"r"===t.charAt(0)?function(t){const e=$t.exec(t);let i,s,n,o=255;if(e){if(e[7]!==i){const t=+e[7];o=e[8]?vt(t):yt(255*t,0,255)}return i=+e[1],s=+e[3],n=+e[5],i=255&(e[2]?vt(i):yt(i,0,255)),s=255&(e[4]?vt(s):yt(s,0,255)),n=255&(e[6]?vt(n):yt(n,0,255)),{r:i,g:s,b:n,a:o}}}(t):Bt(t)}class Zt{constructor(t){if(t instanceof Zt)return t;const e=typeof t;let i;var s,n,o;"object"===e?i=Kt(t):"string"===e&&(o=(s=t).length,"#"===s[0]&&(4===o||5===o?n={r:255&17*St[s[1]],g:255&17*St[s[2]],b:255&17*St[s[3]],a:5===o?17*St[s[4]]:255}:7!==o&&9!==o||(n={r:St[s[1]]<<4|St[s[2]],g:St[s[3]]<<4|St[s[4]],b:St[s[5]]<<4|St[s[6]],a:9===o?St[s[7]]<<4|St[s[8]]:255})),i=n||jt(t)||Gt(t)),this._rgb=i,this._valid=!!i}get valid(){return this._valid}get rgb(){var t=qt(this._rgb);return t&&(t.a=wt(t.a)),t}set rgb(t){this._rgb=Kt(t)}rgbString(){return this._valid?(t=this._rgb)&&(t.a<255?`rgba(${t.r}, ${t.g}, ${t.b}, ${wt(t.a)})`:`rgb(${t.r}, ${t.g}, ${t.b})`):void 0;var t}hexString(){return this._valid?At(this._rgb):void 0}hslString(){return this._valid?function(t){if(!t)return;const e=It(t),i=e[0],s=kt(e[1]),n=kt(e[2]);return t.a<255?`hsla(${i}, ${s}%, ${n}%, ${wt(t.a)})`:`hsl(${i}, ${s}%, ${n}%)`}(this._rgb):void 0}mix(t,e){if(t){const i=this.rgb,s=t.rgb;let n;const o=e===n?.5:e,a=2*o-1,r=i.a-s.a,l=((a*r==-1?a:(a+r)/(1+a*r))+1)/2;n=1-l,i.r=255&l*i.r+n*s.r+.5,i.g=255&l*i.g+n*s.g+.5,i.b=255&l*i.b+n*s.b+.5,i.a=o*i.a+(1-o)*s.a,this.rgb=i}return this}interpolate(t,e){return t&&(this._rgb=function(t,e,i){const s=Ut(wt(t.r)),n=Ut(wt(t.g)),o=Ut(wt(t.b));return{r:Mt(Yt(s+i*(Ut(wt(e.r))-s))),g:Mt(Yt(n+i*(Ut(wt(e.g))-n))),b:Mt(Yt(o+i*(Ut(wt(e.b))-o))),a:t.a+i*(e.a-t.a)}}(this._rgb,t._rgb,e)),this}clone(){return new Zt(this.rgb)}alpha(t){return this._rgb.a=Mt(t),this}clearer(t){return this._rgb.a*=1-t,this}greyscale(){const t=this._rgb,e=_t(.3*t.r+.59*t.g+.11*t.b);return t.r=t.g=t.b=e,this}opaquer(t){return this._rgb.a*=1+t,this}negate(){const t=this._rgb;return t.r=255-t.r,t.g=255-t.g,t.b=255-t.b,this}lighten(t){return Xt(this._rgb,2,t),this}darken(t){return Xt(this._rgb,2,-t),this}saturate(t){return Xt(this._rgb,1,t),this}desaturate(t){return Xt(this._rgb,1,-t),this}rotate(t){return function(t,e){var i=It(t);i[0]=Vt(i[0]+e),i=Ft(i),t.r=i[0],t.g=i[1],t.b=i[2]}(this._rgb,t),this}}function Jt(t){if(t&&"object"==typeof t){const e=t.toString();return"[object CanvasPattern]"===e||"[object CanvasGradient]"===e}return!1}function Qt(t){return Jt(t)?t:new Zt(t)}function te(t){return Jt(t)?t:new Zt(t).saturate(.5).darken(.1).hexString()}const ee=["x","y","borderWidth","radius","tension"],ie=["color","borderColor","backgroundColor"];const se=new Map;function ne(t,e,i){return function(t,e){e=e||{};const i=t+JSON.stringify(e);let s=se.get(i);return s||(s=new Intl.NumberFormat(t,e),se.set(i,s)),s}(e,i).format(t)}const oe={values:t=>n(t)?t:""+t,numeric(t,e,i){if(0===t)return"0";const s=this.chart.options.locale;let n,o=t;if(i.length>1){const e=Math.max(Math.abs(i[0].value),Math.abs(i[i.length-1].value));(e<1e-4||e>1e15)&&(n="scientific"),o=function(t,e){let i=e.length>3?e[2].value-e[1].value:e[1].value-e[0].value;Math.abs(i)>=1&&t!==Math.floor(t)&&(i=t-Math.floor(t));return i}(t,i)}const a=z(Math.abs(o)),r=isNaN(a)?1:Math.max(Math.min(-1*Math.floor(a),20),0),l={notation:n,minimumFractionDigits:r,maximumFractionDigits:r};return Object.assign(l,this.options.ticks.format),ne(t,s,l)},logarithmic(t,e,i){if(0===t)return"0";const s=i[e].significand||t/Math.pow(10,Math.floor(z(t)));return[1,2,3,5,10,15].includes(s)||e>.8*i.length?oe.numeric.call(this,t,e,i):""}};var ae={formatters:oe};const re=Object.create(null),le=Object.create(null);function he(t,e){if(!e)return t;const i=e.split(".");for(let e=0,s=i.length;e<s;++e){const s=i[e];t=t[s]||(t[s]=Object.create(null))}return t}function ce(t,e,i){return"string"==typeof e?b(he(t,e),i):b(he(t,""),e)}class de{constructor(t,e){this.animation=void 0,this.backgroundColor="rgba(0,0,0,0.1)",this.borderColor="rgba(0,0,0,0.1)",this.color="#666",this.datasets={},this.devicePixelRatio=t=>t.chart.platform.getDevicePixelRatio(),this.elements={},this.events=["mousemove","mouseout","click","touchstart","touchmove"],this.font={family:"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",size:12,style:"normal",lineHeight:1.2,weight:null},this.hover={},this.hoverBackgroundColor=(t,e)=>te(e.backgroundColor),this.hoverBorderColor=(t,e)=>te(e.borderColor),this.hoverColor=(t,e)=>te(e.color),this.indexAxis="x",this.interaction={mode:"nearest",intersect:!0,includeInvisible:!1},this.maintainAspectRatio=!0,this.onHover=null,this.onClick=null,this.parsing=!0,this.plugins={},this.responsive=!0,this.scale=void 0,this.scales={},this.showLine=!0,this.drawActiveElementsOnTop=!0,this.describe(t),this.apply(e)}set(t,e){return ce(this,t,e)}get(t){return he(this,t)}describe(t,e){return ce(le,t,e)}override(t,e){return ce(re,t,e)}route(t,e,i,s){const n=he(this,t),a=he(this,i),r="_"+e;Object.defineProperties(n,{[r]:{value:n[e],writable:!0},[e]:{enumerable:!0,get(){const t=this[r],e=a[s];return o(t)?Object.assign({},e,t):l(t,e)},set(t){this[r]=t}}})}apply(t){t.forEach((t=>t(this)))}}var ue=new de({_scriptable:t=>!t.startsWith("on"),_indexable:t=>"events"!==t,hover:{_fallback:"interaction"},interaction:{_scriptable:!1,_indexable:!1}},[function(t){t.set("animation",{delay:void 0,duration:1e3,easing:"easeOutQuart",fn:void 0,from:void 0,loop:void 0,to:void 0,type:void 0}),t.describe("animation",{_fallback:!1,_indexable:!1,_scriptable:t=>"onProgress"!==t&&"onComplete"!==t&&"fn"!==t}),t.set("animations",{colors:{type:"color",properties:ie},numbers:{type:"number",properties:ee}}),t.describe("animations",{_fallback:"animation"}),t.set("transitions",{active:{animation:{duration:400}},resize:{animation:{duration:0}},show:{animations:{colors:{from:"transparent"},visible:{type:"boolean",duration:0}}},hide:{animations:{colors:{to:"transparent"},visible:{type:"boolean",easing:"linear",fn:t=>0|t}}}})},function(t){t.set("layout",{autoPadding:!0,padding:{top:0,right:0,bottom:0,left:0}})},function(t){t.set("scale",{display:!0,offset:!1,reverse:!1,beginAtZero:!1,bounds:"ticks",clip:!0,grace:0,grid:{display:!0,lineWidth:1,drawOnChartArea:!0,drawTicks:!0,tickLength:8,tickWidth:(t,e)=>e.lineWidth,tickColor:(t,e)=>e.color,offset:!1},border:{display:!0,dash:[],dashOffset:0,width:1},title:{display:!1,text:"",padding:{top:4,bottom:4}},ticks:{minRotation:0,maxRotation:50,mirror:!1,textStrokeWidth:0,textStrokeColor:"",padding:3,display:!0,autoSkip:!0,autoSkipPadding:3,labelOffset:0,callback:ae.formatters.values,minor:{},major:{},align:"center",crossAlign:"near",showLabelBackdrop:!1,backdropColor:"rgba(255, 255, 255, 0.75)",backdropPadding:2}}),t.route("scale.ticks","color","","color"),t.route("scale.grid","color","","borderColor"),t.route("scale.border","color","","borderColor"),t.route("scale.title","color","","color"),t.describe("scale",{_fallback:!1,_scriptable:t=>!t.startsWith("before")&&!t.startsWith("after")&&"callback"!==t&&"parser"!==t,_indexable:t=>"borderDash"!==t&&"tickBorderDash"!==t&&"dash"!==t}),t.describe("scales",{_fallback:"scale"}),t.describe("scale.ticks",{_scriptable:t=>"backdropPadding"!==t&&"callback"!==t,_indexable:t=>"backdropPadding"!==t})}]);function fe(){return"undefined"!=typeof window&&"undefined"!=typeof document}function ge(t){let e=t.parentNode;return e&&"[object ShadowRoot]"===e.toString()&&(e=e.host),e}function pe(t,e,i){let s;return"string"==typeof t?(s=parseInt(t,10),-1!==t.indexOf("%")&&(s=s/100*e.parentNode[i])):s=t,s}const me=t=>t.ownerDocument.defaultView.getComputedStyle(t,null);function be(t,e){return me(t).getPropertyValue(e)}const xe=["top","right","bottom","left"];function _e(t,e,i){const s={};i=i?"-"+i:"";for(let n=0;n<4;n++){const o=xe[n];s[o]=parseFloat(t[e+"-"+o+i])||0}return s.width=s.left+s.right,s.height=s.top+s.bottom,s}const ye=(t,e,i)=>(t>0||e>0)&&(!i||!i.shadowRoot);function ve(t,e){if("native"in t)return t;const{canvas:i,currentDevicePixelRatio:s}=e,n=me(i),o="border-box"===n.boxSizing,a=_e(n,"padding"),r=_e(n,"border","width"),{x:l,y:h,box:c}=function(t,e){const i=t.touches,s=i&&i.length?i[0]:t,{offsetX:n,offsetY:o}=s;let a,r,l=!1;if(ye(n,o,t.target))a=n,r=o;else{const t=e.getBoundingClientRect();a=s.clientX-t.left,r=s.clientY-t.top,l=!0}return{x:a,y:r,box:l}}(t,i),d=a.left+(c&&r.left),u=a.top+(c&&r.top);let{width:f,height:g}=e;return o&&(f-=a.width+r.width,g-=a.height+r.height),{x:Math.round((l-d)/f*i.width/s),y:Math.round((h-u)/g*i.height/s)}}const Me=t=>Math.round(10*t)/10;function we(t,e,i,s){const n=me(t),o=_e(n,"margin"),a=pe(n.maxWidth,t,"clientWidth")||T,r=pe(n.maxHeight,t,"clientHeight")||T,l=function(t,e,i){let s,n;if(void 0===e||void 0===i){const o=ge(t);if(o){const t=o.getBoundingClientRect(),a=me(o),r=_e(a,"border","width"),l=_e(a,"padding");e=t.width-l.width-r.width,i=t.height-l.height-r.height,s=pe(a.maxWidth,o,"clientWidth"),n=pe(a.maxHeight,o,"clientHeight")}else e=t.clientWidth,i=t.clientHeight}return{width:e,height:i,maxWidth:s||T,maxHeight:n||T}}(t,e,i);let{width:h,height:c}=l;if("content-box"===n.boxSizing){const t=_e(n,"border","width"),e=_e(n,"padding");h-=e.width+t.width,c-=e.height+t.height}h=Math.max(0,h-o.width),c=Math.max(0,s?h/s:c-o.height),h=Me(Math.min(h,a,l.maxWidth)),c=Me(Math.min(c,r,l.maxHeight)),h&&!c&&(c=Me(h/2));return(void 0!==e||void 0!==i)&&s&&l.height&&c>l.height&&(c=l.height,h=Me(Math.floor(c*s))),{width:h,height:c}}function ke(t,e,i){const s=e||1,n=Math.floor(t.height*s),o=Math.floor(t.width*s);t.height=Math.floor(t.height),t.width=Math.floor(t.width);const a=t.canvas;return a.style&&(i||!a.style.height&&!a.style.width)&&(a.style.height=`${t.height}px`,a.style.width=`${t.width}px`),(t.currentDevicePixelRatio!==s||a.height!==n||a.width!==o)&&(t.currentDevicePixelRatio=s,a.height=n,a.width=o,t.ctx.setTransform(s,0,0,s,0,0),!0)}const Se=function(){let t=!1;try{const e={get passive(){return t=!0,!1}};fe()&&(window.addEventListener("test",null,e),window.removeEventListener("test",null,e))}catch(t){}return t}();function Pe(t,e){const i=be(t,e),s=i&&i.match(/^(\d+)(\.\d+)?px$/);return s?+s[1]:void 0}function De(t){return!t||s(t.size)||s(t.family)?null:(t.style?t.style+" ":"")+(t.weight?t.weight+" ":"")+t.size+"px "+t.family}function Ce(t,e,i,s,n){let o=e[n];return o||(o=e[n]=t.measureText(n).width,i.push(n)),o>s&&(s=o),s}function Oe(t,e,i,s){let o=(s=s||{}).data=s.data||{},a=s.garbageCollect=s.garbageCollect||[];s.font!==e&&(o=s.data={},a=s.garbageCollect=[],s.font=e),t.save(),t.font=e;let r=0;const l=i.length;let h,c,d,u,f;for(h=0;h<l;h++)if(u=i[h],null==u||n(u)){if(n(u))for(c=0,d=u.length;c<d;c++)f=u[c],null==f||n(f)||(r=Ce(t,o,a,r,f))}else r=Ce(t,o,a,r,u);t.restore();const g=a.length/2;if(g>i.length){for(h=0;h<g;h++)delete o[a[h]];a.splice(0,g)}return r}function Ae(t,e,i){const s=t.currentDevicePixelRatio,n=0!==i?Math.max(i/2,.5):0;return Math.round((e-n)*s)/s+n}function Te(t,e){(e=e||t.getContext("2d")).save(),e.resetTransform(),e.clearRect(0,0,t.width,t.height),e.restore()}function Le(t,e,i,s){Ee(t,e,i,s,null)}function Ee(t,e,i,s,n){let o,a,r,l,h,c,d,u;const f=e.pointStyle,g=e.rotation,p=e.radius;let m=(g||0)*L;if(f&&"object"==typeof f&&(o=f.toString(),"[object HTMLImageElement]"===o||"[object HTMLCanvasElement]"===o))return t.save(),t.translate(i,s),t.rotate(m),t.drawImage(f,-f.width/2,-f.height/2,f.width,f.height),void t.restore();if(!(isNaN(p)||p<=0)){switch(t.beginPath(),f){default:n?t.ellipse(i,s,n/2,p,0,0,O):t.arc(i,s,p,0,O),t.closePath();break;case"triangle":c=n?n/2:p,t.moveTo(i+Math.sin(m)*c,s-Math.cos(m)*p),m+=I,t.lineTo(i+Math.sin(m)*c,s-Math.cos(m)*p),m+=I,t.lineTo(i+Math.sin(m)*c,s-Math.cos(m)*p),t.closePath();break;case"rectRounded":h=.516*p,l=p-h,a=Math.cos(m+R)*l,d=Math.cos(m+R)*(n?n/2-h:l),r=Math.sin(m+R)*l,u=Math.sin(m+R)*(n?n/2-h:l),t.arc(i-d,s-r,h,m-C,m-E),t.arc(i+u,s-a,h,m-E,m),t.arc(i+d,s+r,h,m,m+E),t.arc(i-u,s+a,h,m+E,m+C),t.closePath();break;case"rect":if(!g){l=Math.SQRT1_2*p,c=n?n/2:l,t.rect(i-c,s-l,2*c,2*l);break}m+=R;case"rectRot":d=Math.cos(m)*(n?n/2:p),a=Math.cos(m)*p,r=Math.sin(m)*p,u=Math.sin(m)*(n?n/2:p),t.moveTo(i-d,s-r),t.lineTo(i+u,s-a),t.lineTo(i+d,s+r),t.lineTo(i-u,s+a),t.closePath();break;case"crossRot":m+=R;case"cross":d=Math.cos(m)*(n?n/2:p),a=Math.cos(m)*p,r=Math.sin(m)*p,u=Math.sin(m)*(n?n/2:p),t.moveTo(i-d,s-r),t.lineTo(i+d,s+r),t.moveTo(i+u,s-a),t.lineTo(i-u,s+a);break;case"star":d=Math.cos(m)*(n?n/2:p),a=Math.cos(m)*p,r=Math.sin(m)*p,u=Math.sin(m)*(n?n/2:p),t.moveTo(i-d,s-r),t.lineTo(i+d,s+r),t.moveTo(i+u,s-a),t.lineTo(i-u,s+a),m+=R,d=Math.cos(m)*(n?n/2:p),a=Math.cos(m)*p,r=Math.sin(m)*p,u=Math.sin(m)*(n?n/2:p),t.moveTo(i-d,s-r),t.lineTo(i+d,s+r),t.moveTo(i+u,s-a),t.lineTo(i-u,s+a);break;case"line":a=n?n/2:Math.cos(m)*p,r=Math.sin(m)*p,t.moveTo(i-a,s-r),t.lineTo(i+a,s+r);break;case"dash":t.moveTo(i,s),t.lineTo(i+Math.cos(m)*(n?n/2:p),s+Math.sin(m)*p);break;case!1:t.closePath()}t.fill(),e.borderWidth>0&&t.stroke()}}function Re(t,e,i){return i=i||.5,!e||t&&t.x>e.left-i&&t.x<e.right+i&&t.y>e.top-i&&t.y<e.bottom+i}function Ie(t,e){t.save(),t.beginPath(),t.rect(e.left,e.top,e.right-e.left,e.bottom-e.top),t.clip()}function ze(t){t.restore()}function Fe(t,e,i,s,n){if(!e)return t.lineTo(i.x,i.y);if("middle"===n){const s=(e.x+i.x)/2;t.lineTo(s,e.y),t.lineTo(s,i.y)}else"after"===n!=!!s?t.lineTo(e.x,i.y):t.lineTo(i.x,e.y);t.lineTo(i.x,i.y)}function Ve(t,e,i,s){if(!e)return t.lineTo(i.x,i.y);t.bezierCurveTo(s?e.cp1x:e.cp2x,s?e.cp1y:e.cp2y,s?i.cp2x:i.cp1x,s?i.cp2y:i.cp1y,i.x,i.y)}function Be(t,e,i,s,n){if(n.strikethrough||n.underline){const o=t.measureText(s),a=e-o.actualBoundingBoxLeft,r=e+o.actualBoundingBoxRight,l=i-o.actualBoundingBoxAscent,h=i+o.actualBoundingBoxDescent,c=n.strikethrough?(l+h)/2:h;t.strokeStyle=t.fillStyle,t.beginPath(),t.lineWidth=n.decorationWidth||2,t.moveTo(a,c),t.lineTo(r,c),t.stroke()}}function We(t,e){const i=t.fillStyle;t.fillStyle=e.color,t.fillRect(e.left,e.top,e.width,e.height),t.fillStyle=i}function Ne(t,e,i,o,a,r={}){const l=n(e)?e:[e],h=r.strokeWidth>0&&""!==r.strokeColor;let c,d;for(t.save(),t.font=a.string,function(t,e){e.translation&&t.translate(e.translation[0],e.translation[1]),s(e.rotation)||t.rotate(e.rotation),e.color&&(t.fillStyle=e.color),e.textAlign&&(t.textAlign=e.textAlign),e.textBaseline&&(t.textBaseline=e.textBaseline)}(t,r),c=0;c<l.length;++c)d=l[c],r.backdrop&&We(t,r.backdrop),h&&(r.strokeColor&&(t.strokeStyle=r.strokeColor),s(r.strokeWidth)||(t.lineWidth=r.strokeWidth),t.strokeText(d,i,o,r.maxWidth)),t.fillText(d,i,o,r.maxWidth),Be(t,i,o,d,r),o+=Number(a.lineHeight);t.restore()}function He(t,e){const{x:i,y:s,w:n,h:o,radius:a}=e;t.arc(i+a.topLeft,s+a.topLeft,a.topLeft,1.5*C,C,!0),t.lineTo(i,s+o-a.bottomLeft),t.arc(i+a.bottomLeft,s+o-a.bottomLeft,a.bottomLeft,C,E,!0),t.lineTo(i+n-a.bottomRight,s+o),t.arc(i+n-a.bottomRight,s+o-a.bottomRight,a.bottomRight,E,0,!0),t.lineTo(i+n,s+a.topRight),t.arc(i+n-a.topRight,s+a.topRight,a.topRight,0,-E,!0),t.lineTo(i+a.topLeft,s)}function je(t,e=[""],i,s,n=(()=>t[0])){const o=i||t;void 0===s&&(s=ti("_fallback",t));const a={[Symbol.toStringTag]:"Object",_cacheable:!0,_scopes:t,_rootScopes:o,_fallback:s,_getTarget:n,override:i=>je([i,...t],e,o,s)};return new Proxy(a,{deleteProperty:(e,i)=>(delete e[i],delete e._keys,delete t[0][i],!0),get:(i,s)=>qe(i,s,(()=>function(t,e,i,s){let n;for(const o of e)if(n=ti(Ue(o,t),i),void 0!==n)return Xe(t,n)?Je(i,s,t,n):n}(s,e,t,i))),getOwnPropertyDescriptor:(t,e)=>Reflect.getOwnPropertyDescriptor(t._scopes[0],e),getPrototypeOf:()=>Reflect.getPrototypeOf(t[0]),has:(t,e)=>ei(t).includes(e),ownKeys:t=>ei(t),set(t,e,i){const s=t._storage||(t._storage=n());return t[e]=s[e]=i,delete t._keys,!0}})}function $e(t,e,i,s){const a={_cacheable:!1,_proxy:t,_context:e,_subProxy:i,_stack:new Set,_descriptors:Ye(t,s),setContext:e=>$e(t,e,i,s),override:n=>$e(t.override(n),e,i,s)};return new Proxy(a,{deleteProperty:(e,i)=>(delete e[i],delete t[i],!0),get:(t,e,i)=>qe(t,e,(()=>function(t,e,i){const{_proxy:s,_context:a,_subProxy:r,_descriptors:l}=t;let h=s[e];S(h)&&l.isScriptable(e)&&(h=function(t,e,i,s){const{_proxy:n,_context:o,_subProxy:a,_stack:r}=i;if(r.has(t))throw new Error("Recursion detected: "+Array.from(r).join("->")+"->"+t);r.add(t);let l=e(o,a||s);r.delete(t),Xe(t,l)&&(l=Je(n._scopes,n,t,l));return l}(e,h,t,i));n(h)&&h.length&&(h=function(t,e,i,s){const{_proxy:n,_context:a,_subProxy:r,_descriptors:l}=i;if(void 0!==a.index&&s(t))return e[a.index%e.length];if(o(e[0])){const i=e,s=n._scopes.filter((t=>t!==i));e=[];for(const o of i){const i=Je(s,n,t,o);e.push($e(i,a,r&&r[t],l))}}return e}(e,h,t,l.isIndexable));Xe(e,h)&&(h=$e(h,a,r&&r[e],l));return h}(t,e,i))),getOwnPropertyDescriptor:(e,i)=>e._descriptors.allKeys?Reflect.has(t,i)?{enumerable:!0,configurable:!0}:void 0:Reflect.getOwnPropertyDescriptor(t,i),getPrototypeOf:()=>Reflect.getPrototypeOf(t),has:(e,i)=>Reflect.has(t,i),ownKeys:()=>Reflect.ownKeys(t),set:(e,i,s)=>(t[i]=s,delete e[i],!0)})}function Ye(t,e={scriptable:!0,indexable:!0}){const{_scriptable:i=e.scriptable,_indexable:s=e.indexable,_allKeys:n=e.allKeys}=t;return{allKeys:n,scriptable:i,indexable:s,isScriptable:S(i)?i:()=>i,isIndexable:S(s)?s:()=>s}}const Ue=(t,e)=>t?t+w(e):e,Xe=(t,e)=>o(e)&&"adapters"!==t&&(null===Object.getPrototypeOf(e)||e.constructor===Object);function qe(t,e,i){if(Object.prototype.hasOwnProperty.call(t,e))return t[e];const s=i();return t[e]=s,s}function Ke(t,e,i){return S(t)?t(e,i):t}const Ge=(t,e)=>!0===t?e:"string"==typeof t?M(e,t):void 0;function Ze(t,e,i,s,n){for(const o of e){const e=Ge(i,o);if(e){t.add(e);const o=Ke(e._fallback,i,n);if(void 0!==o&&o!==i&&o!==s)return o}else if(!1===e&&void 0!==s&&i!==s)return null}return!1}function Je(t,e,i,s){const a=e._rootScopes,r=Ke(e._fallback,i,s),l=[...t,...a],h=new Set;h.add(s);let c=Qe(h,l,i,r||i,s);return null!==c&&((void 0===r||r===i||(c=Qe(h,l,r,c,s),null!==c))&&je(Array.from(h),[""],a,r,(()=>function(t,e,i){const s=t._getTarget();e in s||(s[e]={});const a=s[e];if(n(a)&&o(i))return i;return a||{}}(e,i,s))))}function Qe(t,e,i,s,n){for(;i;)i=Ze(t,e,i,s,n);return i}function ti(t,e){for(const i of e){if(!i)continue;const e=i[t];if(void 0!==e)return e}}function ei(t){let e=t._keys;return e||(e=t._keys=function(t){const e=new Set;for(const i of t)for(const t of Object.keys(i).filter((t=>!t.startsWith("_"))))e.add(t);return Array.from(e)}(t._scopes)),e}function ii(t,e,i,s){const{iScale:n}=t,{key:o="r"}=this._parsing,a=new Array(s);let r,l,h,c;for(r=0,l=s;r<l;++r)h=r+i,c=e[h],a[r]={r:n.parse(M(c,o),h)};return a}const si=Number.EPSILON||1e-14,ni=(t,e)=>e<t.length&&!t[e].skip&&t[e],oi=t=>"x"===t?"y":"x";function ai(t,e,i,s){const n=t.skip?e:t,o=e,a=i.skip?e:i,r=q(o,n),l=q(a,o);let h=r/(r+l),c=l/(r+l);h=isNaN(h)?0:h,c=isNaN(c)?0:c;const d=s*h,u=s*c;return{previous:{x:o.x-d*(a.x-n.x),y:o.y-d*(a.y-n.y)},next:{x:o.x+u*(a.x-n.x),y:o.y+u*(a.y-n.y)}}}function ri(t,e="x"){const i=oi(e),s=t.length,n=Array(s).fill(0),o=Array(s);let a,r,l,h=ni(t,0);for(a=0;a<s;++a)if(r=l,l=h,h=ni(t,a+1),l){if(h){const t=h[e]-l[e];n[a]=0!==t?(h[i]-l[i])/t:0}o[a]=r?h?F(n[a-1])!==F(n[a])?0:(n[a-1]+n[a])/2:n[a-1]:n[a]}!function(t,e,i){const s=t.length;let n,o,a,r,l,h=ni(t,0);for(let c=0;c<s-1;++c)l=h,h=ni(t,c+1),l&&h&&(V(e[c],0,si)?i[c]=i[c+1]=0:(n=i[c]/e[c],o=i[c+1]/e[c],r=Math.pow(n,2)+Math.pow(o,2),r<=9||(a=3/Math.sqrt(r),i[c]=n*a*e[c],i[c+1]=o*a*e[c])))}(t,n,o),function(t,e,i="x"){const s=oi(i),n=t.length;let o,a,r,l=ni(t,0);for(let h=0;h<n;++h){if(a=r,r=l,l=ni(t,h+1),!r)continue;const n=r[i],c=r[s];a&&(o=(n-a[i])/3,r[`cp1${i}`]=n-o,r[`cp1${s}`]=c-o*e[h]),l&&(o=(l[i]-n)/3,r[`cp2${i}`]=n+o,r[`cp2${s}`]=c+o*e[h])}}(t,o,e)}function li(t,e,i){return Math.max(Math.min(t,i),e)}function hi(t,e,i,s,n){let o,a,r,l;if(e.spanGaps&&(t=t.filter((t=>!t.skip))),"monotone"===e.cubicInterpolationMode)ri(t,n);else{let i=s?t[t.length-1]:t[0];for(o=0,a=t.length;o<a;++o)r=t[o],l=ai(i,r,t[Math.min(o+1,a-(s?0:1))%a],e.tension),r.cp1x=l.previous.x,r.cp1y=l.previous.y,r.cp2x=l.next.x,r.cp2y=l.next.y,i=r}e.capBezierPoints&&function(t,e){let i,s,n,o,a,r=Re(t[0],e);for(i=0,s=t.length;i<s;++i)a=o,o=r,r=i<s-1&&Re(t[i+1],e),o&&(n=t[i],a&&(n.cp1x=li(n.cp1x,e.left,e.right),n.cp1y=li(n.cp1y,e.top,e.bottom)),r&&(n.cp2x=li(n.cp2x,e.left,e.right),n.cp2y=li(n.cp2y,e.top,e.bottom)))}(t,i)}const ci=t=>0===t||1===t,di=(t,e,i)=>-Math.pow(2,10*(t-=1))*Math.sin((t-e)*O/i),ui=(t,e,i)=>Math.pow(2,-10*t)*Math.sin((t-e)*O/i)+1,fi={linear:t=>t,easeInQuad:t=>t*t,easeOutQuad:t=>-t*(t-2),easeInOutQuad:t=>(t/=.5)<1?.5*t*t:-.5*(--t*(t-2)-1),easeInCubic:t=>t*t*t,easeOutCubic:t=>(t-=1)*t*t+1,easeInOutCubic:t=>(t/=.5)<1?.5*t*t*t:.5*((t-=2)*t*t+2),easeInQuart:t=>t*t*t*t,easeOutQuart:t=>-((t-=1)*t*t*t-1),easeInOutQuart:t=>(t/=.5)<1?.5*t*t*t*t:-.5*((t-=2)*t*t*t-2),easeInQuint:t=>t*t*t*t*t,easeOutQuint:t=>(t-=1)*t*t*t*t+1,easeInOutQuint:t=>(t/=.5)<1?.5*t*t*t*t*t:.5*((t-=2)*t*t*t*t+2),easeInSine:t=>1-Math.cos(t*E),easeOutSine:t=>Math.sin(t*E),easeInOutSine:t=>-.5*(Math.cos(C*t)-1),easeInExpo:t=>0===t?0:Math.pow(2,10*(t-1)),easeOutExpo:t=>1===t?1:1-Math.pow(2,-10*t),easeInOutExpo:t=>ci(t)?t:t<.5?.5*Math.pow(2,10*(2*t-1)):.5*(2-Math.pow(2,-10*(2*t-1))),easeInCirc:t=>t>=1?t:-(Math.sqrt(1-t*t)-1),easeOutCirc:t=>Math.sqrt(1-(t-=1)*t),easeInOutCirc:t=>(t/=.5)<1?-.5*(Math.sqrt(1-t*t)-1):.5*(Math.sqrt(1-(t-=2)*t)+1),easeInElastic:t=>ci(t)?t:di(t,.075,.3),easeOutElastic:t=>ci(t)?t:ui(t,.075,.3),easeInOutElastic(t){const e=.1125;return ci(t)?t:t<.5?.5*di(2*t,e,.45):.5+.5*ui(2*t-1,e,.45)},easeInBack(t){const e=1.70158;return t*t*((e+1)*t-e)},easeOutBack(t){const e=1.70158;return(t-=1)*t*((e+1)*t+e)+1},easeInOu
+/* ══════════════════════════════════════════════
+   NAVEGACIÓN POR PESTAÑAS
+══════════════════════════════════════════════ */
+document.querySelectorAll('.tab').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.s).classList.add('active');
+    // lazy render charts
+    if(btn.dataset.s==='ventas') renderVentas();
+    if(btn.dataset.s==='produccion') renderProduccion();
+    if(btn.dataset.s==='requerimientos') renderRequerimientos();
+    if(btn.dataset.s==='compras') renderCompras();
+  });
+});
+
+/* ══════════════════════════════════════════════
+   DATOS CENTRALES
+══════════════════════════════════════════════ */
+const MESES=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const MESES_L=['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+               'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+// Índices estacionales (promedio = 1.00, suma = 12.00)
+const ESTAC=[1.05,1.18,1.15,1.20,0.85,0.78,1.25,1.22,1.18,0.82,0.80,1.52];
+
+// Ventas anuales Año 6 = 202,580 (CAGR 6% sobre Año 5)
+const TOTAL_AÑO6 = 202580;
+const MIX = {m:0.47, c:0.33, r:0.20};
+
+// Ventas mensuales = TOTAL × estac_mes / sum_estac  × 12
+const SUM_ESTAC = ESTAC.reduce((a,b)=>a+b,0);
+const VENTAS_TOTAL = MESES.map((_,i)=> Math.round(TOTAL_AÑO6 * ESTAC[i] / SUM_ESTAC * 12));
+const VENTAS = {
+  m: VENTAS_TOTAL.map(v=>Math.round(v*MIX.m)),
+  c: VENTAS_TOTAL.map(v=>Math.round(v*MIX.c)),
+  r: VENTAS_TOTAL.map(v=>Math.round(v*MIX.r)),
+};
+
+// Producción (ventas + inv_fin - inv_ini; inv = 12% del mes siguiente)
+function calcProd(ventasMes) {
+  const n = ventasMes.length;
+  const invFin = ventasMes.map((_,i)=> Math.round(ventasMes[(i+1)%n]*0.12));
+  const invIni = [invFin[n-1], ...invFin.slice(0,n-1)];
+  return ventasMes.map((_,i)=> Math.max(0, ventasMes[i]+invFin[i]-invIni[i]));
+}
+const PROD = {
+  m: calcProd(VENTAS.m),
+  c: calcProd(VENTAS.c),
+  r: calcProd(VENTAS.r),
+};
+const PROD_TOTAL = MESES.map((_,i)=>PROD.m[i]+PROD.c[i]+PROD.r[i]);
+
+// Capacidad mensual basada en días hábiles
+const DIAS_HAB=[23,20,21,22,20,21,23,22,21,23,22,21];
+const CAP_DIA=990; // envases/día (total planta)
+const CAP_MES=DIAS_HAB.map(d=>d*CAP_DIA);
+
+// Inventario PT fin de mes
+const INV_PT_M = VENTAS.m.map((_,i)=>Math.round(VENTAS.m[(i+1)%12]*0.12));
+const INV_PT_C = VENTAS.c.map((_,i)=>Math.round(VENTAS.c[(i+1)%12]*0.12));
+const INV_PT_R = VENTAS.r.map((_,i)=>Math.round(VENTAS.r[(i+1)%12]*0.12));
+
+// Requerimientos - cédulas (por envase 2L)
+const CEDULAS = [
+  {insumo:'Base láctea',     unidad:'L',   m:1.82, c:1.79, r:1.80},
+  {insumo:'Azúcar',          unidad:'kg',  m:0.24, c:0.22, r:0.23},
+  {insumo:'Cacao en polvo',  unidad:'kg',  m:0,    c:0.08, r:0},
+  {insumo:'Cobertura choc.', unidad:'kg',  m:0,    c:0.06, r:0},
+  {insumo:'Ron',             unidad:'ml',  m:0,    c:0,    r:45},
+  {insumo:'Pasas',           unidad:'g',   m:0,    c:0,    r:60},
+  {insumo:'Estabilizante',   unidad:'g',   m:2.5,  c:2.5,  r:2.5},
+  {insumo:'Vainilla',        unidad:'ml',  m:3.0,  c:0,    r:0},
+  {insumo:'Esencia ron',     unidad:'ml',  m:0,    c:0,    r:2.0},
+  {insumo:'Colorante',       unidad:'ml',  m:1.2,  c:0,    r:0},
+  {insumo:'Envase 2L',       unidad:'ud',  m:1,    c:1,    r:1},
+  {insumo:'Tapa',            unidad:'ud',  m:1,    c:1,    r:1},
+  {insumo:'Etiqueta M',      unidad:'ud',  m:1,    c:0,    r:0},
+  {insumo:'Etiqueta C',      unidad:'ud',  m:0,    c:1,    r:0},
+  {insumo:'Etiqueta R',      unidad:'ud',  m:0,    c:0,    r:1},
+];
+
+// Producción anual por sabor
+const PROD_ANUAL = {
+  m: PROD.m.reduce((a,b)=>a+b,0),
+  c: PROD.c.reduce((a,b)=>a+b,0),
+  r: PROD.r.reduce((a,b)=>a+b,0),
+};
+
+// Consumo anual por insumo (con mermas)
+const REQ = CEDULAS.map(({insumo,unidad,m,c,r})=>{
+  const esEmpaque=['Envase 2L','Tapa','Etiqueta M','Etiqueta C','Etiqueta R'].includes(insumo);
+  const MERMA = esEmpaque?1.01:1.03;
+  const consumo = (m*PROD_ANUAL.m + c*PROD_ANUAL.c + r*PROD_ANUAL.r)*MERMA;
+  return {insumo,unidad,consumo:Math.round(consumo)};
+});
+
+// Compras - datos resumidos
+const PROV_DATA=[
+  {insumo:'Base láctea',     proveedor:'LácteosCentro',    frec:'Semanal',  moq:500,   cob:7,  precio:0.95, total:155300},
+  {insumo:'Azúcar',          proveedor:'CañaVen',          frec:'Mensual',  moq:1000,  cob:25, precio:0.65, total:21450},
+  {insumo:'Cacao en polvo',  proveedor:'CacaoAndino',      frec:'Mensual',  moq:200,   cob:25, precio:4.80, total:8640},
+  {insumo:'Cobertura choc.', proveedor:'ChocoImport',      frec:'Mensual',  moq:100,   cob:25, precio:5.50, total:5280},
+  {insumo:'Ron',             proveedor:'RoneraReal',       frec:'Mensual',  moq:100,   cob:30, precio:3.20, total:4480},
+  {insumo:'Pasas',           proveedor:'ImportFrutas',     frec:'Bimestral',moq:50,    cob:40, precio:6.10, total:3050},
+  {insumo:'Estabilizante',   proveedor:'QuilabVen',        frec:'Bimestral',moq:20,    cob:45, precio:12.00,total:2880},
+  {insumo:'Vainilla',        proveedor:'AromasPur',        frec:'Mensual',  moq:10,    cob:30, precio:28.00,total:2800},
+  {insumo:'Esencia ron',     proveedor:'AromasPur',        frec:'Mensual',  moq:10,    cob:30, precio:22.00,total:1320},
+  {insumo:'Colorante',       proveedor:'ColorFood',        frec:'Bimestral',moq:5,     cob:50, precio:18.00,total:900},
+  {insumo:'Envase 2L',       proveedor:'PlastiPack',       frec:'Mensual',  moq:5000,  cob:20, precio:0.25, total:51200},
+  {insumo:'Tapa',            proveedor:'PlastiPack',       frec:'Mensual',  moq:5000,  cob:20, precio:0.06, total:12300},
+  {insumo:'Etiqueta M',      proveedor:'ImpresoFlex',      frec:'Bimestral',moq:5000,  cob:40, precio:0.04, total:3840},
+  {insumo:'Etiqueta C/R',    proveedor:'ImpresoFlex',      frec:'Bimestral',moq:5000,  cob:40, precio:0.04, total:6300},
+];
+
+// Compras mensuales totales estimadas (USD)
+const COMP_MES=[18420,19350,20180,24320,16800,15600,27400,26800,24200,18100,16900,61670];
+
+// Wilson EOQ data
+const WILSON_DATA=[
+  {insumo:'Base láctea',     d:201655, eoq:8410, moq:500,  decision:'no', nota:'Perecedera, despacho semanal'},
+  {insumo:'Azúcar',          d:32960,  eoq:1070, moq:1000, decision:'apl',nota:'EOQ ≈ MOQ mensual'},
+  {insumo:'Cacao en polvo',  d:1800,   eoq:230,  moq:200,  decision:'apl',nota:'EOQ ≈ 1 pedido/mes'},
+  {insumo:'Cobertura choc.', d:960,    eoq:175,  moq:100,  decision:'apl',nota:'EOQ ≈ MOQ mensual'},
+  {insumo:'Ron',             d:1400,   eoq:290,  moq:100,  decision:'aju',nota:'MOQ > EOQ, se ajusta'},
+  {insumo:'Pasas',           d:500,    eoq:190,  moq:50,   decision:'aju',nota:'Frec. bimestral, se ajusta'},
+  {insumo:'Estabilizante',   d:240,    eoq:95,   moq:20,   decision:'aju',nota:'Frec. bimestral, se ajusta'},
+  {insumo:'Vainilla',        d:100,    eoq:55,   moq:10,   decision:'aju',nota:'Frec. mensual, MOQ < EOQ'},
+  {insumo:'Esencia ron',     d:60,     eoq:42,   moq:10,   decision:'aju',nota:'Frec. mensual'},
+  {insumo:'Colorante',       d:50,     eoq:38,   moq:5,    decision:'aju',nota:'Frec. bimestral'},
+  {insumo:'Envase 2L',       d:205147, eoq:24200,moq:5000, decision:'apl',nota:'EOQ ≈ 5 pedidos/año'},
+  {insumo:'Tapa',            d:205147, eoq:78200,moq:5000, decision:'aju',nota:'MOQ < EOQ, mensual'},
+  {insumo:'Etiquetas',       d:205147, eoq:95600,moq:5000, decision:'aju',nota:'Frec. bimestral'},
+];
+
+// ── Estado de filtros ──────────────────────────────────
+let currentVFilter='all';
+let currentIFilter='all';
+let charts={};
+
+/* ══════════════════════════════════════════════
+   ESTACIONALIDAD VISUAL
+══════════════════════════════════════════════ */
+(function renderEstac(){
+  const grid=document.getElementById('estac-grid');
+  if(!grid)return;
+  MESES.forEach((mes,i)=>{
+    const idx=ESTAC[i];
+    const cls=idx>=1.15?'alto':idx>=0.90?'medio':'bajo';
+    const div=document.createElement('div');
+    div.className=`estac-item ${cls}`;
+    div.innerHTML=`<div class="mes">${mes}</div><div class="idx">${idx.toFixed(2)}</div>`;
+    grid.appendChild(div);
+  });
+})();
+
+/* ══════════════════════════════════════════════
+   UTILIDADES CHART
+══════════════════════════════════════════════ */
+const C_M='#C99A4E', C_C='#8B5E3C', C_R='#A06C8F', C_CAP='#3E7C59';
+function fmt(n){return n.toLocaleString('es-VE');}
+function destroyChart(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
+
+/* ══════════════════════════════════════════════
+   VENTAS
+══════════════════════════════════════════════ */
+function setVentasFilter(f,btn){
+  currentVFilter=f;
+  document.querySelectorAll('[onclick^="setVentasFilter"]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderVentas();
+}
+
+let ventasRendered=false;
+function renderVentas(){
+  if(ventasRendered)return; // only re-render on filter change
+  buildVentasChart();
+  buildVentasTable();
+  ventasRendered=false; // allow re-render on filter
+}
+
+function buildVentasChart(){
+  destroyChart('ventas');
+  const ctx=document.getElementById('chVentas').getContext('2d');
+  const datasets=[];
+  if(currentVFilter==='all'||currentVFilter==='Mantecado')
+    datasets.push({label:'Mantecado',data:VENTAS.m,backgroundColor:C_M+'CC',borderColor:C_M,borderWidth:2,borderRadius:4});
+  if(currentVFilter==='all'||currentVFilter==='Chocolate')
+    datasets.push({label:'Chocolate',data:VENTAS.c,backgroundColor:C_C+'CC',borderColor:C_C,borderWidth:2,borderRadius:4});
+  if(currentVFilter==='all'||currentVFilter==='Ron con Pasas')
+    datasets.push({label:'Ron con Pasas',data:VENTAS.r,backgroundColor:C_R+'CC',borderColor:C_R,borderWidth:2,borderRadius:4});
+  charts['ventas']=new Chart(ctx,{type:'bar',data:{labels:MESES,datasets},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'}},
+      scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,grid:{color:'#E4D8C4'}}}}});
+}
+
+function buildVentasTable(){
+  const tbl=document.getElementById('tbl-ventas');
+  const total_m=VENTAS.m.reduce((a,b)=>a+b,0);
+  const total_c=VENTAS.c.reduce((a,b)=>a+b,0);
+  const total_r=VENTAS.r.reduce((a,b)=>a+b,0);
+  const total_t=VENTAS_TOTAL.reduce((a,b)=>a+b,0);
+  let h=`<table><thead><tr><th>Mes</th><th>Índice estac.</th><th>🍦 Mantecado</th><th>🍫 Chocolate</th><th>🍇 Ron c/Pasas</th><th>Total</th></tr></thead><tbody>`;
+  MESES.forEach((m,i)=>{
+    h+=`<tr><td>${m}</td><td>${ESTAC[i].toFixed(2)}</td><td>${fmt(VENTAS.m[i])}</td><td>${fmt(VENTAS.c[i])}</td><td>${fmt(VENTAS.r[i])}</td><td>${fmt(VENTAS_TOTAL[i])}</td></tr>`;
+  });
+  h+=`<tr class="total"><td>TOTAL</td><td>—</td><td>${fmt(total_m)}</td><td>${fmt(total_c)}</td><td>${fmt(total_r)}</td><td>${fmt(total_t)}</td></tr>`;
+  h+=`</tbody></table>`;
+  tbl.innerHTML=h;
+}
+
+/* ══════════════════════════════════════════════
+   PRODUCCIÓN
+══════════════════════════════════════════════ */
+function setInvFilter(f,btn){
+  currentIFilter=f;
+  document.querySelectorAll('[onclick^="setInvFilter"]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  buildInvChart();
+}
+
+function renderProduccion(){
+  buildProdChart();
+  buildInvChart();
+  buildProdTable();
+}
+
+function buildProdChart(){
+  destroyChart('prod');
+  const ctx=document.getElementById('chProd').getContext('2d');
+  charts['prod']=new Chart(ctx,{type:'bar',data:{labels:MESES,
+    datasets:[
+      {label:'Mantecado',data:PROD.m,backgroundColor:C_M+'CC',borderColor:C_M,borderWidth:2,borderRadius:4},
+      {label:'Chocolate',data:PROD.c,backgroundColor:C_C+'CC',borderColor:C_C,borderWidth:2,borderRadius:4},
+      {label:'Ron c/Pasas',data:PROD.r,backgroundColor:C_R+'CC',borderColor:C_R,borderWidth:2,borderRadius:4},
+      {label:'Capacidad',data:CAP_MES,type:'line',borderColor:C_CAP,borderWidth:2,
+        borderDash:[6,3],pointRadius:0,fill:false},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'}},
+      scales:{x:{stacked:true,grid:{display:false}},y:{stacked:false,grid:{color:'#E4D8C4'}}}}});
+}
+
+function buildInvChart(){
+  destroyChart('inv');
+  const ctx=document.getElementById('chInv').getContext('2d');
+  const datasets=[];
+  if(currentIFilter==='all'||currentIFilter==='Mantecado')
+    datasets.push({label:'Mantecado',data:INV_PT_M,borderColor:C_M,backgroundColor:C_M+'33',fill:true,tension:0.3,pointRadius:4});
+  if(currentIFilter==='all'||currentIFilter==='Chocolate')
+    datasets.push({label:'Chocolate',data:INV_PT_C,borderColor:C_C,backgroundColor:C_C+'33',fill:true,tension:0.3,pointRadius:4});
+  if(currentIFilter==='all'||currentIFilter==='Ron con Pasas')
+    datasets.push({label:'Ron con Pasas',data:INV_PT_R,borderColor:C_R,backgroundColor:C_R+'33',fill:true,tension:0.3,pointRadius:4});
+  charts['inv']=new Chart(ctx,{type:'line',data:{labels:MESES,datasets},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'}},
+      scales:{x:{grid:{display:false}},y:{grid:{color:'#E4D8C4'}}}}});
+}
+
+function buildProdTable(){
+  const tbl=document.getElementById('tbl-prod');
+  let h=`<table><thead><tr><th>Mes</th><th>Días háb.</th><th>Prod. M</th><th>Prod. C</th><th>Prod. R</th><th>Prod. Total</th><th>Capacidad</th><th>Util. %</th></tr></thead><tbody>`;
+  MESES.forEach((m,i)=>{
+    const util=((PROD_TOTAL[i]/CAP_MES[i])*100).toFixed(1);
+    h+=`<tr><td>${m}</td><td>${DIAS_HAB[i]}</td><td>${fmt(PROD.m[i])}</td><td>${fmt(PROD.c[i])}</td><td>${fmt(PROD.r[i])}</td><td>${fmt(PROD_TOTAL[i])}</td><td>${fmt(CAP_MES[i])}</td><td>${util}%</td></tr>`;
+  });
+  const tot=PROD_TOTAL.reduce((a,b)=>a+b,0);
+  const capT=CAP_MES.reduce((a,b)=>a+b,0);
+  h+=`<tr class="total"><td>TOTAL</td><td>${DIAS_HAB.reduce((a,b)=>a+b,0)}</td><td>${fmt(PROD.m.reduce((a,b)=>a+b,0))}</td><td>${fmt(PROD.c.reduce((a,b)=>a+b,0))}</td><td>${fmt(PROD.r.reduce((a,b)=>a+b,0))}</td><td>${fmt(tot)}</td><td>${fmt(capT)}</td><td>${((tot/capT)*100).toFixed(1)}%</td></tr>`;
+  h+=`</tbody></table>`;
+  tbl.innerHTML=h;
+}
+
+/* ══════════════════════════════════════════════
+   REQUERIMIENTOS
+══════════════════════════════════════════════ */
+function renderRequerimientos(){
+  buildCedulasTable();
+  buildReqChart();
+  buildReqTable();
+}
+
+function buildCedulasTable(){
+  const tbl=document.getElementById('tbl-cedulas');
+  let h=`<table><thead><tr><th>Insumo</th><th>Unidad</th><th>Mantecado</th><th>Chocolate</th><th>Ron c/Pasas</th></tr></thead><tbody>`;
+  CEDULAS.forEach(({insumo,unidad,m,c,r})=>{
+    h+=`<tr><td>${insumo}</td><td>${unidad}</td><td>${m||'—'}</td><td>${c||'—'}</td><td>${r||'—'}</td></tr>`;
+  });
+  h+=`</tbody></table>`;
+  tbl.innerHTML=h;
+}
+
+function buildReqChart(){
+  destroyChart('req');
+  const ctx=document.getElementById('chReq').getContext('2d');
+  // Show top 8 by relative importance (normalized 0-100)
+  const top=REQ.slice(0,8);
+  const maxVal=Math.max(...top.map(r=>r.consumo));
+  charts['req']=new Chart(ctx,{type:'bar',data:{
+    labels:top.map(r=>`${r.insumo} (${r.unidad})`),
+    datasets:[{label:'Consumo anual',data:top.map(r=>r.consumo),
+      backgroundColor:[C_M,C_C,C_R,C_CAP,'#A06C8F','#8B5E3C','#C99A4E','#3E7C59'].map(c=>c+'CC'),
+      borderRadius:5,borderWidth:1}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${fmt(ctx.raw)} ${top[ctx.dataIndex].unidad}`}}},
+      scales:{x:{grid:{color:'#E4D8C4'}},y:{grid:{display:false}}}}});
+}
+
+function buildReqTable(){
+  const tbl=document.getElementById('tbl-req');
+  let h=`<table><thead><tr><th>Insumo</th><th>Unidad</th><th>Consumo anual</th></tr></thead><tbody>`;
+  REQ.forEach(({insumo,unidad,consumo})=>{
+    h+=`<tr><td>${insumo}</td><td>${unidad}</td><td>${fmt(consumo)}</td></tr>`;
+  });
+  h+=`</tbody></table>`;
+  tbl.innerHTML=h;
+}
+
+/* ══════════════════════════════════════════════
+   COMPRAS
+══════════════════════════════════════════════ */
+function renderCompras(){
+  buildCompMesChart();
+  buildCompInsChart();
+  buildWilsonTable();
+  buildProvTable();
+  buildComprasTable();
+}
+
+function buildCompMesChart(){
+  destroyChart('compmes');
+  const ctx=document.getElementById('chCompMes').getContext('2d');
+  charts['compmes']=new Chart(ctx,{type:'bar',data:{labels:MESES,
+    datasets:[{label:'Compras USD',data:COMP_MES,backgroundColor:COMP_MES.map(v=>v>30000?C_C+'CC':C_M+'CC'),
+      borderColor:COMP_MES.map(v=>v>30000?C_C:C_M),borderWidth:2,borderRadius:5}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},
+      tooltip:{callbacks:{label:ctx=>`$${fmt(ctx.raw)}`}}},
+      scales:{x:{grid:{display:false}},y:{grid:{color:'#E4D8C4'},ticks:{callback:v=>`$${v.toLocaleString()}`}}}}});
+}
+
+function buildCompInsChart(){
+  destroyChart('compins');
+  const ctx=document.getElementById('chCompIns').getContext('2d');
+  const sorted=[...PROV_DATA].sort((a,b)=>b.total-a.total).slice(0,10);
+  charts['compins']=new Chart(ctx,{type:'bar',data:{
+    labels:sorted.map(p=>p.insumo),
+    datasets:[{label:'Total anual USD',data:sorted.map(p=>p.total),
+      backgroundColor:[C_M,C_C,C_R,C_CAP,'#A06C8F','#8B5E3C','#C99A4E','#3E7C59','#E8C07D','#7A4B6B'].map(c=>c+'CC'),
+      borderRadius:5,borderWidth:1}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`$${fmt(ctx.raw)}`}}},
+      scales:{x:{grid:{color:'#E4D8C4'},ticks:{callback:v=>`$${v.toLocaleString()}` }},y:{grid:{display:false}}}}});
+}
+
+function buildWilsonTable(){
+  const tbl=document.getElementById('tbl-wilson');
+  let h=`<table><thead><tr><th>Insumo</th><th>Demanda D</th><th>EOQ teórico</th><th>MOQ proveedor</th><th>Decisión</th><th>Nota</th></tr></thead><tbody>`;
+  WILSON_DATA.forEach(({insumo,d,eoq,moq,decision,nota})=>{
+    const badge=decision==='no'?'<span class="badge no">✘ No aplica</span>':
+                decision==='apl'?'<span class="badge apl">✔ Aplica</span>':
+                '<span class="badge aju">↔ Se ajusta</span>';
+    h+=`<tr><td>${insumo}</td><td>${fmt(d)}</td><td>${fmt(eoq)}</td><td>${fmt(moq)}</td><td>${badge}</td><td style="font-size:11.5px;color:var(--suave)">${nota}</td></tr>`;
+  });
+  h+=`</tbody></table>`;
+  tbl.innerHTML=h;
+}
+
+function buildProvTable(){
+  const tbl=document.getElementById('tbl-prov');
+  let h=`<table><thead><tr><th>Insumo</th><th>Proveedor</th><th>Frecuencia</th><th>MOQ</th><th>Cobertura (días)</th><th>Precio base</th></tr></thead><tbody>`;
+  PROV_DATA.forEach(({insumo,proveedor,frec,moq,cob,precio})=>{
+    h+=`<tr><td>${insumo}</td><td>${proveedor}</td><td>${frec}</td><td>${fmt(moq)}</td><td>${cob} días</td><td>$${precio}</td></tr>`;
+  });
+  h+=`</tbody></table>`;
+  tbl.innerHTML=h;
+}
+
+function buildComprasTable(){
+  const tbl=document.getElementById('tbl-compras');
+  const totalAnual=COMP_MES.reduce((a,b)=>a+b,0);
+  let h=`<table><thead><tr><th>Mes</th><th>Compras totales (USD)</th><th>% del año</th></tr></thead><tbody>`;
+  COMP_MES.forEach((v,i)=>{
+    h+=`<tr><td>${MESES_L[i]}</td><td>$${fmt(v)}</td><td>${((v/totalAnual)*100).toFixed(1)}%</td></tr>`;
+  });
+  h+=`<tr class="total"><td>TOTAL AÑO</td><td>$${fmt(totalAnual)}</td><td>100%</td></tr>`;
+  h+=`</tbody></table>`;
+  tbl.innerHTML=h;
+}
+
+/* ══════════════════════════════════════════════
+   PROMPTS
+══════════════════════════════════════════════ */
+const PROMPTS=[
+  {
+    titulo:'Presupuesto de Ventas',
+    subtitulo:'Pronóstico + descomposición estacional',
+    why:'Este prompt extrae el CAGR histórico, aplica la descomposición clásica (multiplicativa) para generar los índices estacionales de cada mes y proyecta las ventas mensuales del Año 6 por presentación.',
+    code:`Eres el analista de planeación de ManteChoco, C.A.
+Datos de entrada: ventas históricas mensuales de 5 años (60 obs.) para los sabores Mantecado (47%), Chocolate (33%) y Ron con Pasas (20%), expresadas en unidades de envase 2 L.
+
+Tarea:
+1. Calcula el CAGR año a año (Año1→Año5) sobre las ventas anuales totales.
+2. Proyecta las ventas totales del Año 6 = Año5_total × (1 + CAGR).
+3. Calcula los índices estacionales (descomposición multiplicativa clásica): para cada mes, promedia su proporción sobre el total anual en los 5 años; normaliza para que la suma = 12.
+4. Reparte las ventas del Año 6 por mes usando los índices.
+5. Desglosa cada mes por sabor respetando la mezcla del Año 5.
+6. Devuelve una tabla [Mes, Índice, Mantecado, Chocolate, Ron c/Pasas, Total] y los KPIs anuales.`
+  },
+  {
+    titulo:'Presupuesto de Producción',
+    subtitulo:'Inventario PT · Capacidad · Lotes',
+    why:'Transforma las ventas en plan de producción respetando la política de inventario (12% del mes siguiente) y el calendario laboral. Redondea a lotes enteros por sabor.',
+    code:`Eres el planificador de producción de ManteChoco.
+Datos de entrada: Presupuesto de Ventas mensual por sabor (Año 6).
+Supuestos:
+  - Política inv. PT: 12% de las ventas del mes siguiente.
+  - Inventario inicial Ene = inventario final Dic (circular).
+  - Tamaño de lote: Mantecado 220 ud, Chocolate 165 ud, Ron c/Pasas 137 ud.
+  - Turno: 8 h/día, lunes a viernes; días hábiles por mes provistos.
+  - Velocidad: 330 ud/h por línea; 3 líneas (una por sabor).
+
+Tarea:
+1. Para cada sabor y mes: Producción = Ventas + Inv.Fin - Inv.Ini; redondea al lote entero ≥.
+2. Calcula el inventario final real (puede ser > política).
+3. Calcula la capacidad disponible = días_hábiles × 8 × velocidad.
+4. Determina la utilización (%).
+5. Devuelve: tabla resumen por mes y por sabor, KPIs anuales.`
+  },
+  {
+    titulo:'Presupuesto de Requerimientos',
+    subtitulo:'Cédulas de producción · Mermas · Consolidado',
+    why:'Convierte el plan de producción en cantidades físicas de insumos, aplicando las recetas (cédulas) y los factores de merma. El resultado alimenta directamente el presupuesto de compras.',
+    code:`Eres el analista de materiales de ManteChoco.
+Datos de entrada: Plan de producción mensual por sabor (Año 6) + cédulas de insumos por envase 2 L.
+Supuestos:
+  - Merma proceso (MP): 3% sobre toda la materia prima.
+  - Merma empaque: 1% sobre materiales de empaque.
+
+Tarea:
+1. Para cada insumo, calcula el consumo bruto mensual:
+   consumo = Σ(prod_sabor × cantidad_en_cedula × factor_merma).
+2. Consolida todos los sabores por insumo.
+3. Devuelve: tabla de cédulas, tabla de requerimientos mensuales por insumo, totales anuales.
+4. Destaca los 3 insumos de mayor consumo en valor.`
+  },
+  {
+    titulo:'Presupuesto de Compras',
+    subtitulo:'EOQ · MOQ · Inflación USD · Stock de seguridad',
+    why:'Es el presupuesto más complejo: monetiza los requerimientos físicos con precios sujetos a inflación, respeta las restricciones de cada proveedor (frecuencia y MOQ) y garantiza que el inventario nunca quiebre.',
+    code:`Eres el comprador estratégico de ManteChoco.
+Datos de entrada:
+  - Requerimientos mensuales por insumo (Año 6).
+  - Tabla de proveedores: precio base USD, inflación 6% anual (= 0.4868% mensual compuesta), frecuencia despacho (semanal/mensual/bimestral), MOQ, días de cobertura de seguridad.
+  - Costo de emitir pedido S = $45; costo de mantener H = 25% anual del precio unitario.
+
+Tarea por insumo:
+1. Calcula EOQ = √(2·D·S/H); compara con MOQ; documenta la decisión (aplica/se ajusta/no aplica).
+2. Para cada mes: Inv.seguridad = consumo_mes × cobertura_días / 30.
+3. Compra necesaria = consumo + Inv.seguridad - Inv.inicial.
+4. Ajusta al múltiplo de MOQ ≥ compra_necesaria; si proveedor no despacha ese mes → compra = 0.
+5. Valoriza con precio_mes = precio_base × (1 + 0.004868)^(mes-1).
+6. Reconcilia: Inv.final = Inv.inicial + compra - consumo ≥ Inv.seguridad.
+7. Devuelve: tabla de cédula mensual por insumo, total USD mensual y total USD anual.`
+  },
+  {
+    titulo:'Dashboard Interactivo HTML',
+    subtitulo:'Gráficas · Tablas · Filtros · Pestañas',
+    why:'Con todos los presupuestos cerrados, este prompt genera la página HTML interactiva que integra los cuatro eslabones en un dashboard navegable, con gráficas Chart.js, filtros dinámicos y prompts copiables.',
+    code:`Eres un desarrollador frontend senior especializado en dashboards de supply chain.
+Datos de entrada: los cuatro presupuestos completos de ManteChoco (Ventas, Producción, Requerimientos, Compras) en formato JSON o tabla.
+
+Tarea: Genera un único archivo HTML autocontenido (sin dependencias externas salvo Chart.js CDN) que incluya:
+
+ESTRUCTURA:
+  - Header fijo con nombre y badge de año.
+  - Barra de navegación pegajosa con 6 pestañas: La Empresa | Ventas | Producción | Requerimientos | Compras | Prompts.
+  - Cada pestaña muestra solo su sección (display:none / display:block con animación fade).
+
+POR SECCIÓN:
+  - La Empresa: KPI cards, info-grid con perfil, operación y mezcla, flujo de la cadena.
+  - Ventas: KPI cards, chips de filtro por sabor, gráfica de barras apiladas (Chart.js), tabla mensual, grid visual de índices estacionales.
+  - Producción: KPI cards, gráfica barras+línea de capacidad, chips de filtro para inv.PT, tabla resumen.
+  - Requerimientos: cédulas tabla, gráfica horizontal barras top insumos, tabla consolidada.
+  - Compras: 6 premisas-card, secuencia pasos numerados, ejemplo trabajado, 2 gráficas, análisis Wilson con badges, tabla proveedores, tabla mensual USD.
+  - Prompts: 5 acordeones desplegables con botón Copiar.
+
+DISEÑO: paleta crema/chocolate/mantecado/ron, tipografía DM Sans + DM Serif Display, CSS variables, responsive mobile.`
+  }
+];
+
+(function buildPrompts(){
+  const grid=document.getElementById('prompt-grid');
+  PROMPTS.forEach((p,i)=>{
+    const card=document.createElement('div');
+    card.className='prompt-card';
+    card.innerHTML=`
+      <div class="prompt-head" onclick="togglePrompt(this.parentElement)">
+        <div class="num">${i+1}</div>
+        <div class="ttl"><b>${p.titulo}</b><span>${p.subtitulo}</span></div>
+        <span class="chev">▼</span>
+      </div>
+      <div class="prompt-body">
+        <div class="prompt-inner">
+          <p class="prompt-why">${p.why}</p>
+          <div class="codewrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+            <pre class="code">${p.code}</pre>
+          </div>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+})();
+
+function togglePrompt(card){
+  card.classList.toggle('open');
+}
+function copyCode(btn){
+  const code=btn.nextElementSibling.textContent;
+  navigator.clipboard.writeText(code).then(()=>{
+    btn.textContent='¡Copiado!';btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='Copiar';btn.classList.remove('done');},2000);
+  });
+}
+
+// Render ventas on load (first visible section)
+renderVentas();
+</script>
+</body>
+</html>
